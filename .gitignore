@@ -1,0 +1,12 @@
+node_modules/
+server/node_modules/
+server/prisma/dev.db
+server/prisma/dev.db-journal
+.env
+server/.env
+uploads/article/*
+uploads/book/*
+uploads/scientific/*
+!uploads/article/.gitkeep
+!uploads/book/.gitkeep
+!uploads/scientific/.gitkeep

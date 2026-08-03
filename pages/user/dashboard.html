@@ -1,0 +1,540 @@
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - UM Jurnal</title>
+    <link rel="icon" type="image/png" href="../../assets/icons/UM_icon.png">
+    <link rel="stylesheet" href="../../styles/output.css">
+    <style>
+        :root {
+            --brand: #1879A3;
+            --brand-strong: #1375A0;
+            --brand-soft: #459EC5;
+            --border: #d7e1e8;
+            --text: #163041;
+            --muted: #667887;
+            --surface: #ffffff;
+            --surface-alt: #f8fbfd;
+            --danger: #ef4444;
+            --edit: #3b82f6;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { margin: 0; min-height: 100%; }
+
+        body.dashboard-page {
+            background: linear-gradient(180deg, #f4f9fc 0%, #f8fbfd 40%, #ffffff 100%);
+            color: var(--text);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .site-header {
+            background: linear-gradient(90deg, var(--brand-soft), var(--brand-strong));
+            color: white;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 8px 24px rgba(19, 117, 160, 0.18);
+        }
+
+        .header-inner, .dashboard-shell {
+            width: min(1120px, calc(100% - 2rem));
+            margin: 0 auto;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            min-width: 0;
+        }
+
+        .brand img { height: 2.25rem; width: auto; flex: none; }
+
+        .brand-title {
+            font-weight: 800;
+            font-size: 1.125rem;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: .5rem .75rem;
+        }
+
+        .nav-links a, .nav-links .logout-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: .95rem;
+        }
+
+        .logout-btn {
+            border: 0;
+            background: rgba(255,255,255,.16);
+            padding: .45rem .9rem;
+            border-radius: .6rem;
+            cursor: pointer;
+        }
+
+        .dashboard-shell {
+            padding: 1.5rem 0 2rem;
+        }
+
+        .hero-card {
+            background: rgba(255,255,255,.85);
+            border: 1px solid rgba(215, 225, 232, .9);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            box-shadow: 0 10px 30px rgba(21, 48, 65, 0.05);
+            margin-bottom: 1rem;
+        }
+
+        .page-title {
+            margin: 0 0 .35rem;
+            color: var(--brand);
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            line-height: 1.1;
+        }
+
+        .page-subtitle {
+            margin: 0;
+            color: var(--muted);
+            font-size: .98rem;
+        }
+
+        .tab-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .75rem;
+            margin: 0 0 1.5rem;
+        }
+
+        .tab-btn {
+            border: 1px solid rgba(69, 158, 197, .45);
+            background: white;
+            color: var(--brand);
+            padding: .7rem 1.15rem;
+            border-radius: .9rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(21, 48, 65, 0.04);
+        }
+
+        .tab-btn.active { background-color: var(--brand-soft); color: white; border-color: transparent; }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .section-title { font-size: 1.45rem; font-weight: 800; color: var(--brand); margin: 0; }
+
+        .btn-primary {
+            background-color: var(--brand-soft);
+            color: white;
+            padding: .8rem 1.1rem;
+            border-radius: .85rem;
+            cursor: pointer;
+            border: none;
+            font-weight: 800;
+            font-size: .95rem;
+            box-shadow: 0 8px 18px rgba(69, 158, 197, .18);
+        }
+        .btn-primary:hover { background-color: #3a8ab0; }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--muted);
+            background: white;
+            border: 1px dashed var(--border);
+            border-radius: 1rem;
+        }
+
+        .tab-content { min-width: 0; }
+
+        .item-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: .9rem;
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+        }
+
+        .item-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 26px rgba(21, 48, 65, 0.08);
+            border-color: rgba(69, 158, 197, .35);
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .card-content { min-width: 0; }
+        .card-actions { display: flex; gap: .5rem; flex-shrink: 0; }
+
+        .btn-edit, .btn-delete {
+            color: white;
+            padding: .45rem .8rem;
+            border-radius: .5rem;
+            cursor: pointer;
+            border: none;
+            font-size: .82rem;
+            font-weight: 700;
+        }
+
+        .btn-edit { background-color: var(--edit); }
+        .btn-delete { background-color: var(--danger); }
+
+        .item-title { margin: 0 0 .35rem; font-size: 1.05rem; font-weight: 800; color: var(--text); }
+        .item-meta { margin: .35rem 0 0; color: var(--muted); font-size: .82rem; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; padding: 1rem; background: rgba(15, 23, 42, .55); z-index: 100; justify-content: center; align-items: center; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: white; border-radius: 1.1rem; padding: 1.25rem; width: min(100%, 640px); max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,.22); }
+
+        .modal-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .modal-title { margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--brand); }
+        .modal-close { border: 0; background: transparent; font-size: 2rem; line-height: 1; cursor: pointer; color: var(--muted); }
+
+        .form-group { margin-bottom: 12px; }
+        label { font-weight: 700; font-size: 14px; margin-bottom: 4px; display: block; color: var(--text); }
+        input[type="text"], input[type="email"], input[type="password"], textarea, input[type="file"] {
+            border: 1px solid var(--border); border-radius: .6rem; padding: .7rem .8rem; width: 100%; font-size: 14px; background: white; }
+        input:focus, textarea:focus { outline: 2px solid rgba(69, 158, 197, .2); border-color: var(--brand-soft); }
+
+        .btn-wide { width: 100%; margin-top: .75rem; }
+
+        @media (max-width: 640px) {
+            .header-inner, .dashboard-shell { width: min(100% - 1rem, 1120px); }
+            .header-inner { align-items: flex-start; }
+            .nav-links { justify-content: flex-start; }
+            .section-head { align-items: flex-start; }
+            .card-row { flex-direction: column; }
+            .card-actions { flex-wrap: wrap; }
+            .modal { padding: 1rem; }
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+    <header class="site-header">
+        <div class="header-inner">
+        <div class="brand">
+            <img src="../../assets/icons/UM_icon.png" alt="UM">
+            <span class="brand-title">UM Jurnal - Dashboard</span>
+        </div>
+        <nav class="nav-links">
+            <a href="../../index.html">Home</a>
+            <a href="../artikel.html">Artikel</a>
+            <a href="../buku.html">Buku</a>
+            <a href="../karya-ilmiah.html">Karya Ilmiah</a>
+            <span id="user-name"></span>
+            <button onclick="doLogout()" class="logout-btn">Logout</button>
+        </nav>
+        </div>
+    </header>
+
+    <main class="dashboard-shell">
+        <section class="hero-card">
+            <h1 class="page-title">Dashboard</h1>
+            <p id="welcome-msg" class="page-subtitle"></p>
+        </section>
+
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="showTab('articles')">Artikel</button>
+            <button class="tab-btn" onclick="showTab('books')">Buku</button>
+            <button class="tab-btn" onclick="showTab('scientific')">Karya Ilmiah</button>
+        </div>
+
+        <div id="articles-tab" class="tab-content">
+            <div class="section-head">
+                <h2 class="section-title mb-0">Artikel Saya</h2>
+                <button class="btn-primary" onclick="openModal('article')">+ Tambah Artikel</button>
+            </div>
+            <div id="articles-list"></div>
+        </div>
+
+        <div id="books-tab" class="tab-content" style="display:none;">
+            <div class="section-head">
+                <h2 class="section-title mb-0">Buku Saya</h2>
+                <button class="btn-primary" onclick="openModal('book')">+ Tambah Buku</button>
+            </div>
+            <div id="books-list"></div>
+        </div>
+
+        <div id="scientific-tab" class="tab-content" style="display:none;">
+            <div class="section-head">
+                <h2 class="section-title mb-0">Karya Ilmiah Saya</h2>
+                <button class="btn-primary" onclick="openModal('scientific')">+ Tambah Karya Ilmiah</button>
+            </div>
+            <div id="scientific-list"></div>
+        </div>
+    </main>
+
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-head">
+                <h3 id="modal-title" class="modal-title"></h3>
+                <button onclick="closeModal()" class="modal-close">&times;</button>
+            </div>
+            <form id="modal-form" enctype="multipart/form-data"></form>
+        </div>
+    </div>
+
+    <script src="../../script/script.js"></script>
+    <script>
+    let currentTab = 'articles';
+    let editingId = null;
+    let editType = null;
+
+    function checkAuth() {
+        if (!isLoggedIn()) { window.location.href = '../login.html'; return; }
+        const user = getUser();
+        if (user) {
+            document.getElementById('user-name').textContent = user.name;
+            document.getElementById('welcome-msg').textContent = 'Selamat datang, ' + user.name + '! Kelola artikel, buku, dan karya ilmiah Anda di sini.';
+        }
+    }
+
+    function showTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(el => { el.classList.remove('active'); el.classList.add('bg-white'); });
+        document.getElementById(tab + '-tab').style.display = 'block';
+        event.target.classList.add('active');
+        event.target.classList.remove('bg-white');
+        loadData();
+    }
+
+    async function loadData() {
+        if (currentTab === 'articles') await loadArticles();
+        else if (currentTab === 'books') await loadBooks();
+        else if (currentTab === 'scientific') await loadScientific();
+    }
+
+    async function loadArticles() {
+        const res = await apiGet('/articles');
+        const list = document.getElementById('articles-list');
+        if (!res.success || !res.data.articles.length) {
+            list.innerHTML = '<div class="empty-state">Belum ada artikel.</div>';
+            return;
+        }
+        const user = getUser();
+        const myArticles = res.data.articles.filter(a => a.userId === user.id);
+        if (!myArticles.length) {
+            list.innerHTML = '<div class="empty-state">Belum ada artikel.</div>';
+            return;
+        }
+        list.innerHTML = myArticles.map(a => `
+            <div class="item-card">
+                <div class="card-row flex justify-between items-start gap-4">
+                    <div class="card-content">
+                        <h3 class="item-title">${escapeHtml(a.title)}</h3>
+                        <p class="item-summary">${escapeHtml((a.abstract || a.content || '').substring(0, 100))}${(a.abstract || a.content || '').length > 100 ? '...' : ''}</p>
+                        <p class="item-meta">${new Date(a.createdAt).toLocaleDateString('id-ID')}</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="editArticle('${a.id}')">Edit</button>
+                        <button class="btn-delete" onclick="deleteItem('articles', '${a.id}')">Hapus</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function loadBooks() {
+        const res = await apiGet('/books');
+        const list = document.getElementById('books-list');
+        if (!res.success || !res.data.books.length) {
+            list.innerHTML = '<div class="empty-state">Belum ada buku.</div>';
+            return;
+        }
+        const user = getUser();
+        const myBooks = res.data.books.filter(b => b.userId === user.id);
+        if (!myBooks.length) {
+            list.innerHTML = '<div class="empty-state">Belum ada buku.</div>';
+            return;
+        }
+        list.innerHTML = myBooks.map(b => `
+            <div class="item-card">
+                <div class="card-row flex justify-between items-start gap-4">
+                    <div class="card-content">
+                        <h3 class="item-title">${escapeHtml(b.title)}</h3>
+                        <p class="item-summary">${escapeHtml(b.author || '')} ${b.year ? '- ' + b.year : ''}</p>
+                        <p class="item-meta">${new Date(b.createdAt).toLocaleDateString('id-ID')}</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="editBook('${b.id}')">Edit</button>
+                        <button class="btn-delete" onclick="deleteItem('books', '${b.id}')">Hapus</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function loadScientific() {
+        const res = await apiGet('/scientific');
+        const list = document.getElementById('scientific-list');
+        if (!res.success || !res.data.works.length) {
+            list.innerHTML = '<div class="empty-state">Belum ada karya ilmiah.</div>';
+            return;
+        }
+        const user = getUser();
+        const myWorks = res.data.works.filter(w => w.userId === user.id);
+        if (!myWorks.length) {
+            list.innerHTML = '<div class="empty-state">Belum ada karya ilmiah.</div>';
+            return;
+        }
+        list.innerHTML = myWorks.map(w => `
+            <div class="item-card">
+                <div class="card-row flex justify-between items-start gap-4">
+                    <div class="card-content">
+                        <h3 class="item-title">${escapeHtml(w.title)}</h3>
+                        <p class="item-summary">${escapeHtml((w.abstract || '').substring(0, 100))}${(w.abstract || '').length > 100 ? '...' : ''}</p>
+                        <p class="item-meta">${new Date(w.createdAt).toLocaleDateString('id-ID')}</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="editScientific('${w.id}')">Edit</button>
+                        <button class="btn-delete" onclick="deleteItem('scientific', '${w.id}')">Hapus</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openModal(type, data = null) {
+        editType = type;
+        editingId = data ? data.id : null;
+        const overlay = document.getElementById('modal-overlay');
+        const title = document.getElementById('modal-title');
+        const form = document.getElementById('modal-form');
+
+        if (type === 'article') {
+            title.textContent = editingId ? 'Edit Artikel' : 'Tambah Artikel';
+            form.innerHTML = `
+                <div class="form-group"><label>Judul</label><input type="text" name="title" value="${data ? escapeHtml(data.title) : ''}" required></div>
+                <div class="form-group"><label>Abstrak</label><textarea name="abstract" rows="3">${data ? escapeHtml(data.abstract || '') : ''}</textarea></div>
+                <div class="form-group"><label>Konten</label><textarea name="content" rows="4">${data ? escapeHtml(data.content || '') : ''}</textarea></div>
+                <div class="form-group"><label>Thumbnail</label><input type="file" name="thumbnail" accept="image/*"></div>
+                <button type="submit" class="btn-primary btn-wide">${editingId ? 'Simpan Perubahan' : 'Buat Artikel'}</button>
+            `;
+        } else if (type === 'book') {
+            title.textContent = editingId ? 'Edit Buku' : 'Tambah Buku';
+            form.innerHTML = `
+                <div class="form-group"><label>Judul</label><input type="text" name="title" value="${data ? escapeHtml(data.title) : ''}" required></div>
+                <div class="form-group"><label>Penulis</label><input type="text" name="author" value="${data ? escapeHtml(data.author || '') : ''}"></div>
+                <div class="form-group"><label>Tahun</label><input type="text" name="year" value="${data ? escapeHtml(data.year || '') : ''}"></div>
+                <div class="form-group"><label>Sinopsis</label><textarea name="synopsis" rows="3">${data ? escapeHtml(data.synopsis || '') : ''}</textarea></div>
+                <div class="form-group"><label>Sampul</label><input type="file" name="cover" accept="image/*"></div>
+                <div class="form-group"><label>File PDF</label><input type="file" name="pdfFile" accept=".pdf"></div>
+                <button type="submit" class="btn-primary btn-wide">${editingId ? 'Simpan Perubahan' : 'Buat Buku'}</button>
+            `;
+        } else if (type === 'scientific') {
+            title.textContent = editingId ? 'Edit Karya Ilmiah' : 'Tambah Karya Ilmiah';
+            form.innerHTML = `
+                <div class="form-group"><label>Judul</label><input type="text" name="title" value="${data ? escapeHtml(data.title) : ''}" required></div>
+                <div class="form-group"><label>Abstrak</label><textarea name="abstract" rows="3">${data ? escapeHtml(data.abstract || '') : ''}</textarea></div>
+                <div class="form-group"><label>DOI</label><input type="text" name="doi" value="${data ? escapeHtml(data.doi || '') : ''}"></div>
+                <div class="form-group"><label>Google Scholar Link</label><input type="text" name="scholarLink" value="${data ? escapeHtml(data.scholarLink || '') : ''}"></div>
+                <div class="form-group"><label>File PDF</label><input type="file" name="pdfFile" accept=".pdf"></div>
+                <button type="submit" class="btn-primary btn-wide">${editingId ? 'Simpan Perubahan' : 'Buat Karya Ilmiah'}</button>
+            `;
+        }
+
+        form.onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            let url, method;
+            if (editingId) {
+                url = '/' + (type === 'scientific' ? 'scientific' : type + 's') + '/' + editingId;
+                method = 'PUT';
+            } else {
+                url = '/' + (type === 'scientific' ? 'scientific' : type + 's');
+                method = 'POST';
+            }
+
+            try {
+                const res = await fetch(API_BASE + url, {
+                    method: method,
+                    headers: { ...authHeaders() },
+                    body: formData,
+                });
+                const json = await res.json();
+                if (json.success) {
+                    alert(json.message);
+                    closeModal();
+                    loadData();
+                } else {
+                    alert(json.message);
+                }
+            } catch(err) {
+                alert('Terjadi kesalahan.');
+            }
+        };
+
+        overlay.classList.add('show');
+    }
+
+    function closeModal(e) {
+        if (e && e.target !== document.getElementById('modal-overlay')) return;
+        document.getElementById('modal-overlay').classList.remove('show');
+        editingId = null;
+        editType = null;
+    }
+
+    async function editArticle(id) {
+        const res = await apiGet('/articles/' + id);
+        if (res.success) openModal('article', res.data.article);
+    }
+
+    async function editBook(id) {
+        const res = await apiGet('/books/' + id);
+        if (res.success) openModal('book', res.data.book);
+    }
+
+    async function editScientific(id) {
+        const res = await apiGet('/scientific/' + id);
+        if (res.success) openModal('scientific', res.data.work);
+    }
+
+    async function deleteItem(type, id) {
+        if (!confirm('Yakin ingin menghapus?')) return;
+        const res = await apiDelete('/' + type + '/' + id);
+        if (res.success) {
+            alert(res.message);
+            loadData();
+        } else {
+            alert(res.message);
+        }
+    }
+
+    checkAuth();
+    loadData();
+    </script>
+</body>
+
+</html>
