@@ -61,7 +61,7 @@
     /* document card */
 
     .document-card {
-        @apply relative flex flex-col overflow-x-hidden rounded-2xl p-9 transition-transform duration-300 hover:scale-120 h-[440px] w-[300px];
+        @apply relative flex flex-col overflow-hidden rounded-2xl p-9 transition-transform duration-300 hover:scale-120 h-[440px] w-[300px];
     }
 
     .document-card>img:first-child {
