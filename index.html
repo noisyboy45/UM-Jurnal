@@ -100,7 +100,7 @@
                 </div>
             </div>
             <div class="flex flex-col justify-center items-center xl:w-[1200px] w-full">
-                <div class="swiper-document flex flex-col items-center w-full">
+                <div class="swiper-document flex flex-col items-center w-full" data-swiper-type="artikel">
                     <div class="relative flex justify-center items-center w-full z-20">
                         <button
                             class="btn-slider-left cursor-pointer absolute left-10 max-sm:left-5 lg:scale-80 max-sm:scale-60 top-1/2 -translate-y-1/2 -translate-x-1/2">
@@ -385,7 +385,7 @@
                     </div>
                 </div>
 
-                <div class="swiper-document flex flex-col items-center w-full">
+                <div class="swiper-document flex flex-col items-center w-full" data-swiper-type="buku">
                     <div class="relative flex justify-center items-center w-full z-20">
                         <button
                             class="btn-slider-left cursor-pointer absolute left-10 max-sm:left-5 lg:scale-80 max-sm:scale-60 top-1/2 -translate-y-1/2 -translate-x-1/2">
@@ -576,7 +576,7 @@
                     </div>
                 </div>
 
-                <div class="swiper-document flex flex-col items-center w-full">
+                <div class="swiper-document flex flex-col items-center w-full" data-swiper-type="karya-ilmiah">
                     <div class="relative flex justify-center items-center w-full z-20">
                         <button
                             class="btn-slider-left cursor-pointer absolute left-10 max-sm:left-5 lg:scale-80 max-sm:scale-60 top-1/2 -translate-y-1/2 -translate-x-1/2">
@@ -914,6 +914,131 @@
         </div>
     </footer>
     <script src="script/script.js"></script>
+    <script>
+        function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+        function renderEmpty(track, swiperEl, message) {
+            track.innerHTML = `<p class="text-center w-full py-10 text-white/80">${message}</p>`;
+            if (swiperEl) window.refreshSwiperCards?.(swiperEl);
+        }
+
+        async function loadArtikelSwiper() {
+            const swiperEl = document.querySelector('[data-swiper-type="artikel"]');
+            const track = swiperEl ? swiperEl.querySelector('.swiper-track') : null;
+            if (!track) return;
+            try {
+                const res = await fetch('/api/articles');
+                const json = await res.json();
+                track.innerHTML = '';
+                const articles = (json.success && json.data.articles) ? json.data.articles : [];
+                if (!articles.length) return renderEmpty(track, swiperEl, 'Belum ada artikel yang tersedia.');
+                articles.forEach(a => {
+                    const card = document.createElement('div');
+                    card.className = 'document-card bg-linear-to-b from-[#F4A35D] to-[#F78725] cursor-pointer';
+                    const thumbSrc = a.thumbnail ? '/uploads/article/' + a.thumbnail : 'assets/icons/UM_icon.png';
+                    const itemUrl = 'pages/item-artikel.html?id=' + a.id;
+                    card.innerHTML = `
+                        <img src="${thumbSrc}" alt="">
+                        <span>${escapeHtml(a.title)}</span>
+                        <div class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                            <div class="flex flex-col w-full">
+                                <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                <p class="text-justify">${escapeHtml((a.abstract || a.content || '').substring(0, 150))}${(a.abstract || a.content || '').length > 150 ? '...' : ''}</p>
+                            </div>
+                            <a class="flex justify-center items-center text-white font-semibold bg-[#F59644] rounded-full h-7 w-full" href="${itemUrl}">Cek Selengkapnya &#10132;</a>
+                        </div>`;
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('a')) return;
+                        window.location.href = itemUrl;
+                    });
+                    track.appendChild(card);
+                });
+                window.refreshSwiperCards?.(swiperEl);
+            } catch (e) {
+                console.error(e);
+                renderEmpty(track, swiperEl, 'Gagal memuat artikel.');
+            }
+        }
+
+        async function loadBukuSwiper() {
+            const swiperEl = document.querySelector('[data-swiper-type="buku"]');
+            const track = swiperEl ? swiperEl.querySelector('.swiper-track') : null;
+            if (!track) return;
+            try {
+                const res = await fetch('/api/books');
+                const json = await res.json();
+                track.innerHTML = '';
+                const books = (json.success && json.data.books) ? json.data.books : [];
+                if (!books.length) return renderEmpty(track, swiperEl, 'Belum ada buku yang tersedia.');
+                books.forEach(b => {
+                    const card = document.createElement('div');
+                    card.className = 'document-card bg-linear-to-b from-[#B57CFF] to-[#8A38F5] cursor-pointer';
+                    const coverSrc = b.cover ? '/uploads/book/' + b.cover : 'assets/icons/UM_icon.png';
+                    const itemUrl = 'pages/item-buku.html?id=' + b.id;
+                    card.innerHTML = `
+                        <img src="${coverSrc}" alt="">
+                        <span>${escapeHtml(b.title)}</span>
+                        <div class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                            <div class="flex flex-col w-full">
+                                <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                <p class="text-justify">${escapeHtml((b.synopsis || '').substring(0, 150))}${(b.synopsis || '').length > 150 ? '...' : ''}</p>
+                            </div>
+                            <a class="flex justify-center items-center text-white font-semibold bg-[#8A38F5] rounded-full h-7 w-full" href="${itemUrl}">Cek Selengkapnya &#10132;</a>
+                        </div>`;
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('a')) return;
+                        window.location.href = itemUrl;
+                    });
+                    track.appendChild(card);
+                });
+                window.refreshSwiperCards?.(swiperEl);
+            } catch (e) {
+                console.error(e);
+                renderEmpty(track, swiperEl, 'Gagal memuat buku.');
+            }
+        }
+
+        async function loadKaryaIlmiahSwiper() {
+            const swiperEl = document.querySelector('[data-swiper-type="karya-ilmiah"]');
+            const track = swiperEl ? swiperEl.querySelector('.swiper-track') : null;
+            if (!track) return;
+            try {
+                const res = await fetch('/api/scientific');
+                const json = await res.json();
+                track.innerHTML = '';
+                const works = (json.success && json.data.works) ? json.data.works : [];
+                if (!works.length) return renderEmpty(track, swiperEl, 'Belum ada karya ilmiah yang tersedia.');
+                works.forEach(w => {
+                    const card = document.createElement('div');
+                    card.className = 'document-card bg-linear-to-b from-[#43D482] to-[#00923F] cursor-pointer';
+                    const itemUrl = 'pages/item-karya-ilmiah.html?id=' + w.id;
+                    card.innerHTML = `
+                        <img src="assets/icons/UM_icon.png" alt="">
+                        <span>${escapeHtml(w.title)}</span>
+                        <div class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                            <div class="flex flex-col w-full">
+                                <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                <p class="text-justify">${escapeHtml((w.abstract || '').substring(0, 150))}${(w.abstract || '').length > 150 ? '...' : ''}</p>
+                            </div>
+                            <a class="flex justify-center items-center text-white font-semibold bg-[#00923F] rounded-full h-7 w-full" href="${itemUrl}">Cek Selengkapnya &#10132;</a>
+                        </div>`;
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('a')) return;
+                        window.location.href = itemUrl;
+                    });
+                    track.appendChild(card);
+                });
+                window.refreshSwiperCards?.(swiperEl);
+            } catch (e) {
+                console.error(e);
+                renderEmpty(track, swiperEl, 'Gagal memuat karya ilmiah.');
+            }
+        }
+
+        loadArtikelSwiper();
+        loadBukuSwiper();
+        loadKaryaIlmiahSwiper();
+    </script>
     <script src="script/vendor.js"></script>
 </body>
 

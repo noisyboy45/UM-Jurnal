@@ -75,7 +75,7 @@
                     <div class="bg-[#4BA3C9] left-35 bottom-0 absolute w-260 h-1"></div>
                 </div>
             </div>
-            <div class="swiper-document flex flex-col items-center w-full">
+            <div class="swiper-document flex flex-col items-center w-full" data-swiper-type="artikel">
                 <div class="relative flex justify-center items-center w-full z-20">
                     <button
                         class="btn-slider-left cursor-pointer absolute left-10 max-sm:left-5 lg:scale-80 max-sm:scale-60 top-1/2 -translate-y-1/2 -translate-x-1/2">
@@ -413,17 +413,24 @@
     <script src="../script/script.js"></script>
     <script>
         (async function () {
+            const track = document.querySelector('.swiper-track');
+            const swiperEl = track ? track.closest('.swiper-document') : null;
+            if (!track) return;
             try {
                 const res = await fetch('/api/articles');
                 const json = await res.json();
-                if (!json.success || !json.data.articles.length) return;
-                const track = document.querySelector('.swiper-track');
-                if (!track) return;
                 track.innerHTML = '';
-                json.data.articles.forEach(a => {
+                const articles = (json.success && json.data.articles) ? json.data.articles : [];
+                if (!articles.length) {
+                    track.innerHTML = '<p class="text-center w-full py-10 text-gray-500">Belum ada artikel yang tersedia.</p>';
+                    if (swiperEl) window.refreshSwiperCards?.(swiperEl);
+                    return;
+                }
+                articles.forEach(a => {
                     const card = document.createElement('div');
-                    card.className = 'document-card bg-gradient-to-b from-[#F4A35D] to-[#F78725]';
+                    card.className = 'document-card bg-gradient-to-b from-[#F4A35D] to-[#F78725] cursor-pointer';
                     const thumbSrc = a.thumbnail ? '/uploads/article/' + a.thumbnail : '../assets/icons/UM_icon.png';
+                    const itemUrl = 'item-artikel.html?id=' + a.id;
                     card.innerHTML = `
                 <img src="${thumbSrc}" alt="">
                 <span>${escapeHtml(a.title)}</span>
@@ -432,12 +439,25 @@
                         <span class="font-semibold mb-2 text-black">Deskripsi:</span>
                         <p class="text-justify">${escapeHtml((a.abstract || a.content || '').substring(0, 150))}${(a.abstract || a.content || '').length > 150 ? '...' : ''}</p>
                     </div>
-                    <a class="flex justify-center items-center text-white font-semibold bg-[#F59644] rounded-full h-7 w-full" href="item-artikel.html?id=${a.id}">Cek Selengkapnya &#10132;</a>
+                    <a class="flex justify-center items-center text-white font-semibold bg-[#F59644] rounded-full h-7 w-full" href="${itemUrl}">Cek Selengkapnya &#10132;</a>
                 </div>
             `;
+                    // Seluruh kartu bisa diklik menuju detail artikel (kecuali klik
+                    // tepat di tombol "Cek Selengkapnya" yang sudah punya link sendiri).
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('a')) return;
+                        window.location.href = itemUrl;
+                    });
                     track.appendChild(card);
                 });
-            } catch (e) { console.error(e); }
+                // Kartu baru sudah ada di DOM -> init ulang hover & swiper
+                // supaya panah, pagination, dan link "Cek Selengkapnya" ikut jalan.
+                if (swiperEl) window.refreshSwiperCards?.(swiperEl);
+            } catch (e) {
+                console.error(e);
+                track.innerHTML = '<p class="text-center w-full py-10 text-gray-500">Gagal memuat artikel.</p>';
+                if (swiperEl) window.refreshSwiperCards?.(swiperEl);
+            }
             function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
         })();
     </script>

@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        <div class="swiper-document flex flex-col items-center w-full">
+        <div class="swiper-document flex flex-col items-center w-full" data-swiper-type="buku">
             <div class="relative flex justify-center items-center w-full z-20">
                 <button
                     class="btn-slider-left cursor-pointer absolute left-10 max-sm:left-5 lg:scale-80 max-sm:scale-60 top-1/2 -translate-y-1/2 -translate-x-1/2">
@@ -321,17 +321,24 @@
     <script src="../script/script.js"></script>
     <script>
         (async function () {
+            const track = document.querySelector('.swiper-track');
+            const swiperEl = track ? track.closest('.swiper-document') : null;
+            if (!track) return;
             try {
                 const res = await fetch('/api/books');
                 const json = await res.json();
-                if (!json.success || !json.data.books.length) return;
-                const track = document.querySelector('.swiper-track');
-                if (!track) return;
                 track.innerHTML = '';
-                json.data.books.forEach(b => {
+                const books = (json.success && json.data.books) ? json.data.books : [];
+                if (!books.length) {
+                    track.innerHTML = '<p class="text-center w-full py-10 text-gray-500">Belum ada buku yang tersedia.</p>';
+                    if (swiperEl) window.refreshSwiperCards?.(swiperEl);
+                    return;
+                }
+                books.forEach(b => {
                     const card = document.createElement('div');
-                    card.className = 'document-card bg-gradient-to-b from-[#5DB3F4] to-[#2578F7]';
+                    card.className = 'document-card bg-gradient-to-b from-[#B57CFF] to-[#8A38F5] cursor-pointer';
                     const coverSrc = b.cover ? '/uploads/book/' + b.cover : '../assets/icons/UM_icon.png';
+                    const itemUrl = 'item-buku.html?id=' + b.id;
                     card.innerHTML = `
                 <img src="${coverSrc}" alt="">
                 <span>${escapeHtml(b.title)}</span>
@@ -340,12 +347,21 @@
                         <span class="font-semibold mb-2 text-black">Deskripsi:</span>
                         <p class="text-justify">${escapeHtml((b.synopsis || '').substring(0, 150))}${(b.synopsis || '').length > 150 ? '...' : ''}</p>
                     </div>
-                    <a class="flex justify-center items-center text-white font-semibold bg-[#3482CB] rounded-full h-7 w-full" href="item-buku.html?id=${b.id}">Cek Selengkapnya &#10132;</a>
+                    <a class="flex justify-center items-center text-white font-semibold bg-[#8A38F5] rounded-full h-7 w-full" href="${itemUrl}">Cek Selengkapnya &#10132;</a>
                 </div>
             `;
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('a')) return;
+                        window.location.href = itemUrl;
+                    });
                     track.appendChild(card);
                 });
-            } catch (e) { console.error(e); }
+                if (swiperEl) window.refreshSwiperCards?.(swiperEl);
+            } catch (e) {
+                console.error(e);
+                track.innerHTML = '<p class="text-center w-full py-10 text-gray-500">Gagal memuat buku.</p>';
+                if (swiperEl) window.refreshSwiperCards?.(swiperEl);
+            }
             function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
         })();
     </script>

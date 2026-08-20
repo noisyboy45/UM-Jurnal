@@ -1,42 +1,57 @@
 
 
+// ============================================================
+// docu-card-hover + swiper
+// ------------------------------------------------------------
+// Dulu logic ini cuma jalan sekali saat halaman dimuat, memakai
+// kartu placeholder statis yang ada di HTML. Begitu halaman
+// artikel/buku/karya-ilmiah/index mengambil data asli dari API
+// dan mengganti isi .swiper-track, kartu barunya tidak pernah
+// "di-init" lagi -> hover mati, panah/pagination salah hitung,
+// dan tombol "Cek Selengkapnya" jadi tidak bisa diklik.
+//
+// Sekarang semua logic dibungkus jadi fungsi yang bisa dipanggil
+// ulang kapan saja (window.initDocumentCardHover / window.initSwiper /
+// window.initAllSwipers), termasuk setelah fetch selesai mengisi
+// kartu asli.
+// ============================================================
 
+function initDocumentCardHover(scope) {
+    const root = scope || document;
+    const documentCard = root.querySelectorAll(".document-card");
 
-// docu-card-hover
+    documentCard.forEach(card => {
+        if (card.dataset.hoverInit === '1') return;
+        const deskripsiCard = card.querySelector(".deskripsi-card");
+        if (!deskripsiCard) return;
 
-const documentCard = document.querySelectorAll(".document-card");
-
-documentCard.forEach(card => {
-    const deskripsiCard = card.querySelector(".deskripsi-card");
-
-    deskripsiCard.style.transition = 'bottom 0.3s ease';
-    deskripsiCard.classList.remove('top-130')
-    deskripsiCard.style.bottom = '-17.5rem';
-
-    card.addEventListener('mouseenter', () => {
-        deskripsiCard.style.bottom = '0.8rem';
-    });
-
-    card.addEventListener('mouseleave', () => {
+        deskripsiCard.style.transition = 'bottom 0.3s ease';
+        deskripsiCard.classList.remove('top-130');
         deskripsiCard.style.bottom = '-17.5rem';
+
+        card.addEventListener('mouseenter', () => {
+            deskripsiCard.style.bottom = '0.8rem';
+        });
+
+        card.addEventListener('mouseleave', () => {
+            deskripsiCard.style.bottom = '-17.5rem';
+        });
+
+        card.dataset.hoverInit = '1';
     });
+}
 
-});
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const btnSliderRight = document.querySelectorAll(".btn-slider-right");
-    const btnSliderLeft = document.querySelectorAll(".btn-slider-left");
+function initArrowEffect(scope) {
+    const root = scope || document;
+    const btnSliderRight = root.querySelectorAll(".btn-slider-right");
+    const btnSliderLeft = root.querySelectorAll(".btn-slider-left");
     const arrowBtnSlider = [...btnSliderLeft, ...btnSliderRight];
 
-
-
-    // arrow efect
-
     arrowBtnSlider.forEach(arrow => {
+        if (arrow.dataset.arrowInit === '1') return;
         const circle = arrow.querySelector("svg circle");
         const path = arrow.querySelector("svg path");
+        if (!circle || !path) return;
 
         circle.style.fill = "white";
         path.style.fill = "#00923F";
@@ -50,120 +65,140 @@ document.addEventListener('DOMContentLoaded', () => {
             path.style.fill = "#00923F";
         });
 
+        arrow.dataset.arrowInit = '1';
+    });
+}
+
+// Inisialisasi ulang SATU swiper (elemen .swiper-document). Aman
+// dipanggil berkali-kali: pagination dibersihkan, transform di-reset,
+// dan listener panah tidak dobel karena tombolnya di-clone dulu.
+function initSwiper(swiperEl) {
+    if (!swiperEl) return;
+
+    const track = swiperEl.querySelector(".swiper-track");
+    const cards = swiperEl.querySelectorAll(".document-card");
+    const pagination = swiperEl.querySelector(".pagination");
+    let btnSliderLeft = swiperEl.querySelector(".btn-slider-left");
+    let btnSliderRight = swiperEl.querySelector(".btn-slider-right");
+
+    if (track) {
+        track.style.transition = 'all 0.5s ease';
+        track.style.transform = 'translateX(0px)';
+    }
+    if (pagination) pagination.innerHTML = '';
+
+    // Tidak ada kartu sama sekali (belum ada data) -> sembunyikan
+    // navigasi supaya tidak ada tombol/dot yang "nyasar" dan error.
+    if (!track || cards.length === 0) {
+        btnSliderLeft?.classList.add('hidden');
+        btnSliderRight?.classList.add('hidden');
+        return;
+    }
+
+    // Clone tombol panah supaya listener lama (yang terikat ke
+    // render sebelumnya) tidak menumpuk saat init dipanggil ulang.
+    if (btnSliderRight) {
+        const fresh = btnSliderRight.cloneNode(true);
+        fresh.removeAttribute('data-arrow-init');
+        btnSliderRight.replaceWith(fresh);
+        btnSliderRight = fresh;
+    }
+    if (btnSliderLeft) {
+        const fresh = btnSliderLeft.cloneNode(true);
+        fresh.removeAttribute('data-arrow-init');
+        btnSliderLeft.replaceWith(fresh);
+        btnSliderLeft = fresh;
+    }
+    initArrowEffect(swiperEl);
+
+    if (!btnSliderLeft || !btnSliderRight) return;
+
+    const gap = 40;
+    const cardWidth = cards[0].offsetWidth + gap;
+    let currentIndex = 0;
+    let slidePerView;
+
+    function updateSliderPerView() {
+        slidePerView = window.innerWidth <= 992 ? 2 : 4;
+    }
+    updateSliderPerView();
+    window.addEventListener('resize', updateSliderPerView);
+
+    function hiddenArrow(idx) {
+        btnSliderLeft.classList.toggle("hidden", idx === 0);
+        btnSliderRight.classList.toggle("hidden", idx === cards.length - slidePerView || cards.length < slidePerView);
+    }
+
+    function paginationUpdate(idx) {
+        if (!pagination) return;
+        const dots = pagination.querySelectorAll("svg circle");
+        dots.forEach(dot => { dot.style.fill = '#B8B8B8'; });
+        if (dots[idx]) dots[idx].style.fill = '#3E9EC6';
+    }
+
+    hiddenArrow(currentIndex);
+
+    btnSliderRight.addEventListener('click', () => {
+        updateSliderPerView();
+        if (currentIndex < cards.length - slidePerView) {
+            currentIndex++;
+            track.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
+            paginationUpdate(currentIndex);
+            hiddenArrow(currentIndex);
+        }
     });
 
-
-
-    //  swiper
-
-    const swiperDocument = document.querySelectorAll(".swiper-document");
-
-    swiperDocument.forEach(swiper => {
-
-        const track = swiper.querySelector(".swiper-track");
-        const card = swiper.querySelectorAll(".document-card");
-
-        const btnSliderLeft = swiper.querySelector(".btn-slider-left");
-        const btnSliderRight = swiper.querySelector(".btn-slider-right");
-
-        const gap = 40;
-        const cardWidth = card[0].offsetWidth + gap;
-        let currentIndex = 0;
-
-        let slidePerView;
-
-
-        function updateSliderPerView() {
-            if (window.innerWidth <= 992) {
-                slidePerView = 2
-            } else {
-                slidePerView = 4;
-            }
+    btnSliderLeft.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            track.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
+            paginationUpdate(currentIndex);
+            hiddenArrow(currentIndex);
         }
-        updateSliderPerView();
-        window.addEventListener('resize', updateSliderPerView);
+    });
 
-        track.style.transition = 'all 0.5s ease';
-
-        hiddenArrow(currentIndex);
-
-        btnSliderRight.addEventListener('click', () => {
-            updateSliderPerView();
-            if (currentIndex < card.length - slidePerView) {
-                currentIndex++;
-                track.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
-                paginationUpdate(currentIndex);
-
-                hiddenArrow(currentIndex);
-            }
-
-        });
-
-
-        btnSliderLeft.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                track.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
-                paginationUpdate(currentIndex);
-                hiddenArrow(currentIndex);
-
-            }
-        });
-
-
-        // pagination
-
-        const pagination = swiper.querySelector(".pagination");
-
-
-        if (card.length > slidePerView) {
-            for (i = 0; i < card.length - slidePerView + 1; i++) {
-                pagination.innerHTML += `
-                    <svg class="mx-2 mb-10" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27"
-                        fill="none">
-                        <circle cx="13.5" cy="13.5" r="13.5" fill="#3E9EC6"/>
-                    </svg>`;
-                paginationUpdate(currentIndex);
-
-            }
-        } else {
+    // pagination dots
+    if (pagination) {
+        const dotCount = cards.length > slidePerView ? (cards.length - slidePerView + 1) : 1;
+        for (let i = 0; i < dotCount; i++) {
             pagination.innerHTML += `
                     <svg class="mx-2 mb-10" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27"
                         fill="none">
                         <circle cx="13.5" cy="13.5" r="13.5" fill="#3E9EC6"/>
                     </svg>`;
         }
+        paginationUpdate(currentIndex);
+    }
+}
 
-        function paginationUpdate(currentIndex) {
-            const pagination = swiper.querySelector(".pagination");
-            const dot = pagination.querySelectorAll("svg circle");
+// Cari & init ulang SEMUA swiper yang ada di halaman ini.
+function initAllSwipers() {
+    document.querySelectorAll(".swiper-document").forEach(initSwiper);
+}
 
+// Init hover + swiper untuk satu blok tertentu sekaligus. Dipanggil
+// dari halaman-halaman yang mengisi kartu dari API (artikel.html,
+// buku.html, karya-ilmiah.html, index.html) tepat setelah kartu
+// asli selesai dirender ke dalam .swiper-track.
+function refreshSwiperCards(swiperEl) {
+    if (!swiperEl) return;
+    initDocumentCardHover(swiperEl);
+    initSwiper(swiperEl);
+}
 
-            dot.forEach(dot => {
-                dot.style.fill = '#B8B8B8';
-            });
+window.initDocumentCardHover = initDocumentCardHover;
+window.initArrowEffect = initArrowEffect;
+window.initSwiper = initSwiper;
+window.initAllSwipers = initAllSwipers;
+window.refreshSwiperCards = refreshSwiperCards;
 
-            dot[currentIndex].style = '#3E9EC6';
-        }
+document.addEventListener('DOMContentLoaded', () => {
 
-        function hiddenArrow(currentIndex) {
-            if (currentIndex == 0) {
-                btnSliderLeft.classList.add("hidden");
-            } else {
-                btnSliderLeft.classList.remove("hidden");
-            }
-            if (currentIndex == card.length - slidePerView || card.length < slidePerView) {
-                btnSliderRight.classList.add("hidden");
-            } else {
-                btnSliderRight.classList.remove("hidden");
-            }
-
-
-        }
-
-
-    });
-
+    // arrow effect + hover untuk kartu statis yang mungkin masih
+    // ada di halaman (mis. sebelum data API selesai dimuat)
+    initArrowEffect();
+    initDocumentCardHover();
+    initAllSwipers();
 
     // form new submision toggler
 
@@ -236,6 +271,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 });
-
-
 
