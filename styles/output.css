@@ -236,6 +236,9 @@
   .bottom-0 {
     bottom: 0px;
   }
+  .-left-45 {
+    left: calc(var(--spacing) * -45);
+  }
   .-left-55 {
     left: calc(var(--spacing) * -55);
   }
@@ -430,6 +433,9 @@
   }
   .h-118 {
     height: calc(var(--spacing) * 118);
+  }
+  .h-120 {
+    height: calc(var(--spacing) * 120);
   }
   .h-140 {
     height: calc(var(--spacing) * 140);
