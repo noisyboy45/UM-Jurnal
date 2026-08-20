@@ -40,7 +40,8 @@ const createArticle = async (req, res) => {
       return errorResponse(res, 'Judul wajib diisi.');
     }
 
-    const thumbnail = req.file ? req.file.filename : null;
+    const thumbnail = req.files && req.files.thumbnail ? req.files.thumbnail[0].filename : null;
+    const pdfFile = req.files && req.files.pdfFile ? req.files.pdfFile[0].filename : null;
 
     const article = await prisma.article.create({
       data: {
@@ -48,6 +49,7 @@ const createArticle = async (req, res) => {
         content: content || null,
         abstract: abstract || null,
         thumbnail,
+        pdfFile,
         userId: req.user.id,
       },
       include: { user: { select: { id: true, name: true, email: true } } },
@@ -74,12 +76,22 @@ const updateArticle = async (req, res) => {
     }
 
     let thumbnail = existing.thumbnail;
-    if (req.file) {
+    let pdfFile = existing.pdfFile;
+
+    if (req.files && req.files.thumbnail) {
       if (existing.thumbnail) {
         const oldPath = path.join(__dirname, '../../uploads/article', existing.thumbnail);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
-      thumbnail = req.file.filename;
+      thumbnail = req.files.thumbnail[0].filename;
+    }
+
+    if (req.files && req.files.pdfFile) {
+      if (existing.pdfFile) {
+        const oldPath = path.join(__dirname, '../../uploads/article', existing.pdfFile);
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      }
+      pdfFile = req.files.pdfFile[0].filename;
     }
 
     const article = await prisma.article.update({
@@ -89,6 +101,7 @@ const updateArticle = async (req, res) => {
         content: content !== undefined ? content : existing.content,
         abstract: abstract !== undefined ? abstract : existing.abstract,
         thumbnail,
+        pdfFile,
       },
       include: { user: { select: { id: true, name: true, email: true } } },
     });
@@ -115,6 +128,10 @@ const deleteArticle = async (req, res) => {
     if (existing.thumbnail) {
       const thumbPath = path.join(__dirname, '../../uploads/article', existing.thumbnail);
       if (fs.existsSync(thumbPath)) fs.unlinkSync(thumbPath);
+    }
+    if (existing.pdfFile) {
+      const pdfPath = path.join(__dirname, '../../uploads/article', existing.pdfFile);
+      if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
     }
 
     await prisma.article.delete({ where: { id } });

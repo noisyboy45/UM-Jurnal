@@ -156,11 +156,21 @@
                 const abstractP = document.querySelector('.bg-gradient-to-b p');
                 if (abstractP) abstractP.textContent = d.abstract || d.content || 'Tidak ada abstrak.';
                 if (d.pdfFile) {
-                    const links = document.querySelectorAll('a');
-                    links.forEach(a => {
-                        if (a.textContent.includes('PDF') || a.textContent.includes('Unduh')) {
-                            a.href = '/uploads/article/' + d.pdfFile;
+                    const pdfUrl = '/uploads/article/' + d.pdfFile;
+                    document.querySelectorAll('a').forEach(a => {
+                        if (a.textContent.includes('Lihat PDF')) {
+                            a.href = pdfUrl;
                             a.target = '_blank';
+                            a.removeAttribute('download');
+                        } else if (a.textContent.includes('Unduh')) {
+                            a.href = pdfUrl;
+                            a.setAttribute('download', d.title || 'artikel.pdf');
+                        }
+                    });
+                } else {
+                    document.querySelectorAll('a').forEach(a => {
+                        if (a.textContent.includes('Lihat PDF') || a.textContent.includes('Unduh')) {
+                            a.classList.add('opacity-50', 'pointer-events-none');
                         }
                     });
                 }

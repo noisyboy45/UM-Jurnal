@@ -149,11 +149,21 @@
                 const descEl = document.querySelector('.bg-gradient-to-b p') || document.querySelector('p.text-justify');
                 if (descEl) descEl.textContent = d.abstract || 'Tidak ada abstrak.';
                 if (d.pdfFile) {
-                    const pdfLinks = document.querySelectorAll('a');
-                    pdfLinks.forEach(a => {
-                        if (a.textContent.includes('PDF') || a.textContent.includes('Unduh')) {
-                            a.href = '/uploads/scientific/' + d.pdfFile;
+                    const pdfUrl = '/uploads/scientific/' + d.pdfFile;
+                    document.querySelectorAll('a').forEach(a => {
+                        if (a.textContent.includes('Lihat PDF')) {
+                            a.href = pdfUrl;
                             a.target = '_blank';
+                            a.removeAttribute('download');
+                        } else if (a.textContent.includes('Unduh')) {
+                            a.href = pdfUrl;
+                            a.setAttribute('download', d.title || 'karya-ilmiah.pdf');
+                        }
+                    });
+                } else {
+                    document.querySelectorAll('a').forEach(a => {
+                        if (a.textContent.includes('Lihat PDF') || a.textContent.includes('Unduh')) {
+                            a.classList.add('opacity-50', 'pointer-events-none');
                         }
                     });
                 }
