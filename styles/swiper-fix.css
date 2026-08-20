@@ -34,3 +34,53 @@
     scroll-snap-align: start;
     flex-shrink: 0;
 }
+
+/* ------------------------------------------------------------
+   Ukuran kartu (scale)
+   ------------------------------------------------------------
+   Kode lama menaruh "scale-75" pada .swiper-track (di DALAM area
+   yang di-scroll) lalu digabung lagi dengan scale responsif punya
+   .swiper-viewport sendiri (lg:scale-80 / lg:scale-85 / max-sm:scale-50)
+   dari nenek moyangnya -> dua transform ketumpuk (nested) supaya
+   ukurannya pas.
+
+   Transform di DALAM elemen yang di-scroll (.swiper-track) itu yang
+   bikin acuan "posisi scroll asli (layout px)" vs "posisi yang
+   kelihatan di layar (setelah discale)" jadi tidak singkron - ini
+   akar masalah yang sama seperti bug "-left-64" sebelumnya. Makanya
+   scale-75 di .swiper-track sudah dibuang total.
+
+   Supaya ukuran kartu tetap sama seperti desain awal TANPA menaruh
+   transform di dalam area scroll, kedua angka scale itu (yang dulu
+   nempel di 2 elemen berbeda: .swiper-track & .swiper-viewport)
+   digabung jadi SATU angka lalu ditaruh di .swiper-viewport saja
+   (elemen yang di-scroll, discale dari LUAR - aman, tidak bikin
+   konflik antara koordinat scroll vs koordinat layar).
+
+   0.75 (dulu punya track) x 0.80/0.85 (dulu punya viewport, lg) x 0.50 (max-sm)
+   ------------------------------------------------------------ */
+
+.swiper-viewport {
+    transform: scale(0.75);
+}
+
+/* varian "Artikel": dulu lg:scale-80 -> 0.75 x 0.8 = 0.6 */
+@media (min-width: 992px) {
+    .swiper-viewport--80 {
+        transform: scale(0.6);
+    }
+}
+
+/* varian "Buku" & "Karya Ilmiah": dulu lg:scale-85 -> 0.75 x 0.85 = 0.6375 */
+@media (min-width: 992px) {
+    .swiper-viewport--85 {
+        transform: scale(0.6375);
+    }
+}
+
+/* dulu max-sm:scale-50 (berlaku sama di ketiga swiper) -> 0.75 x 0.5 = 0.375 */
+@media (max-width: 575px) {
+    .swiper-viewport {
+        transform: scale(0.375);
+    }
+}
