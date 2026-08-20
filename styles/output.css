@@ -236,6 +236,9 @@
   .bottom-0 {
     bottom: 0px;
   }
+  .-left-5 {
+    left: calc(var(--spacing) * -5);
+  }
   .-left-25 {
     left: calc(var(--spacing) * -25);
   }
@@ -1069,8 +1072,14 @@
     .max-sm\:h-8 {
       height: calc(var(--spacing) * 8);
     }
+    .max-sm\:h-15 {
+      height: calc(var(--spacing) * 15);
+    }
     .max-sm\:h-16 {
       height: calc(var(--spacing) * 16);
+    }
+    .max-sm\:h-25 {
+      height: calc(var(--spacing) * 25);
     }
     .max-sm\:h-45 {
       height: calc(var(--spacing) * 45);
