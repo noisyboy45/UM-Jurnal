@@ -1,0 +1,36 @@
+/* ============================================================
+   Swiper fix — native scroll based carousel
+   ------------------------------------------------------------
+   Track lama pakai kombinasi "relative left -256px" + "transform:
+   scale(.75)" lalu digeser pakai transform: translateX(...) yang
+   dihitung dari offsetWidth (unscaled). Kombinasi itu bikin posisi
+   kartu meleset (ketutupan / terpotong) begitu jumlah kartu hasil
+   fetch API beda dari kartu placeholder awal, seperti yang kelihatan
+   di screenshot (kartu pertama kepotong/blank).
+
+   Swiper baru pakai native horizontal scroll + scroll-snap. Panah
+   kiri/kanan tinggal manggil viewport.scrollTo(...), jadi tidak ada
+   lagi hitung-hitungan transform manual yang gampang meleset.
+   ============================================================ */
+
+.swiper-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* old Edge / IE */
+}
+
+.swiper-viewport::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, new Edge */
+}
+
+.swiper-track .document-card {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+}

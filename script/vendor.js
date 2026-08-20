@@ -70,30 +70,51 @@ function initArrowEffect(scope) {
 }
 
 // Inisialisasi ulang SATU swiper (elemen .swiper-document). Aman
-// dipanggil berkali-kali: pagination dibersihkan, transform di-reset,
-// dan listener panah tidak dobel karena tombolnya di-clone dulu.
+// dipanggil berkali-kali: pagination dibersihkan, scroll di-reset,
+// listener panah tidak dobel karena tombolnya di-clone, dan listener
+// scroll tidak dobel karena dilepas dulu lewat referensi tersimpan.
+//
+// Catatan migrasi: versi lama menggeser ".swiper-track" pakai
+// transform: translateX(...) yang dihitung dari offsetWidth kartu,
+// sementara tracknya sendiri masih punya "left: -256px" + "scale(.75)"
+// bawaan Tailwind. Begitu jumlah/lebar kartu hasil fetch API beda dari
+// kartu placeholder saat halaman pertama dibuka, hitungan translateX
+// itu meleset dan kartu jadi kepotong/ketutupan (persis seperti di
+// screenshot). Sekarang swiper pakai native horizontal scroll
+// (".swiper-viewport" + scroll-snap di styles/swiper-fix.css) supaya
+// panah kiri/kanan tinggal scroll ke posisi kartu yang sebenarnya,
+// tidak ada lagi rumus transform manual yang gampang meleset.
 function initSwiper(swiperEl) {
     if (!swiperEl) return;
 
+    let viewport = swiperEl.querySelector(".swiper-viewport");
     const track = swiperEl.querySelector(".swiper-track");
-    const cards = swiperEl.querySelectorAll(".document-card");
     const pagination = swiperEl.querySelector(".pagination");
     let btnSliderLeft = swiperEl.querySelector(".btn-slider-left");
     let btnSliderRight = swiperEl.querySelector(".btn-slider-right");
 
-    if (track) {
-        track.style.transition = 'all 0.5s ease';
-        track.style.transform = 'translateX(0px)';
-    }
     if (pagination) pagination.innerHTML = '';
+
+    const cards = track ? track.querySelectorAll(".document-card") : [];
 
     // Tidak ada kartu sama sekali (belum ada data) -> sembunyikan
     // navigasi supaya tidak ada tombol/dot yang "nyasar" dan error.
-    if (!track || cards.length === 0) {
+    if (!viewport || !track || cards.length === 0) {
         btnSliderLeft?.classList.add('hidden');
         btnSliderRight?.classList.add('hidden');
         return;
     }
+
+    // NB: viewport TIDAK di-clone (beda dari tombol panah di bawah),
+    // karena kartu di dalamnya sudah dipasangi listener hover oleh
+    // initDocumentCardHover() sebelum initSwiper() ini dipanggil -
+    // clone akan membuang listener itu. Listener 'scroll' lama cukup
+    // dilepas manual lewat referensi yang disimpan di elemennya sendiri.
+    if (viewport.__swiperScrollHandler) {
+        viewport.removeEventListener('scroll', viewport.__swiperScrollHandler);
+        viewport.__swiperScrollHandler = null;
+    }
+    viewport.scrollLeft = 0;
 
     // Clone tombol panah supaya listener lama (yang terikat ke
     // render sebelumnya) tidak menumpuk saat init dipanggil ulang.
@@ -113,65 +134,95 @@ function initSwiper(swiperEl) {
 
     if (!btnSliderLeft || !btnSliderRight) return;
 
-    const gap = 40;
-    const cardWidth = cards[0].offsetWidth + gap;
-    let currentIndex = 0;
+    const liveCards = viewport.querySelectorAll(".document-card");
 
     // Dihitung langsung tiap dibutuhkan (bukan lewat listener 'resize' yang
     // ditumpuk setiap initSwiper dipanggil ulang) supaya tidak ada listener
-    // "hantu" yang menumpuk saat swiper di-refresh berkali-kali (mis. setelah
-    // data API masuk menggantikan kartu placeholder).
+    // "hantu" yang menumpuk saat swiper di-refresh berkali-kali.
     function getSlidePerView() {
         return window.innerWidth <= 992 ? 2 : 4;
     }
 
-    function hiddenArrow(idx) {
-        const slidePerView = getSlidePerView();
-        btnSliderLeft.classList.toggle("hidden", idx === 0);
-        btnSliderRight.classList.toggle("hidden", idx === cards.length - slidePerView || cards.length < slidePerView);
+    // Jarak (px, dalam koordinat layout asli viewport, tidak terpengaruh
+    // transform/scale nenek moyangnya) dari awal satu kartu ke kartu
+    // berikutnya. Dipakai sebagai satu "langkah" scroll.
+    function getStep() {
+        if (liveCards.length > 1) {
+            const step = liveCards[1].offsetLeft - liveCards[0].offsetLeft;
+            if (step > 0) return step;
+        }
+        return liveCards[0].offsetWidth || 1;
     }
 
-    function paginationUpdate(idx) {
+    function maxScrollLeft() {
+        return Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    }
+
+    function currentIndex() {
+        const step = getStep();
+        return step ? Math.round(viewport.scrollLeft / step) : 0;
+    }
+
+    function updateArrows() {
+        const max = maxScrollLeft();
+        btnSliderLeft.classList.toggle("hidden", viewport.scrollLeft <= 1);
+        btnSliderRight.classList.toggle("hidden", max <= 1 || viewport.scrollLeft >= max - 1);
+    }
+
+    function dotCount() {
+        const slidePerView = getSlidePerView();
+        return liveCards.length > slidePerView ? (liveCards.length - slidePerView + 1) : 1;
+    }
+
+    function paginationUpdate() {
         if (!pagination) return;
         const dots = pagination.querySelectorAll("svg circle");
+        if (!dots.length) return;
+        const idx = Math.min(dots.length - 1, Math.max(0, currentIndex()));
         dots.forEach(dot => { dot.style.fill = '#B8B8B8'; });
         if (dots[idx]) dots[idx].style.fill = '#3E9EC6';
     }
 
-    hiddenArrow(currentIndex);
+    function scrollToIndex(idx) {
+        const step = getStep();
+        const max = maxScrollLeft();
+        const target = Math.min(Math.max(idx * step, 0), max);
+        viewport.scrollTo({ left: target, behavior: 'smooth' });
+    }
 
     btnSliderRight.addEventListener('click', () => {
-        const slidePerView = getSlidePerView();
-        if (currentIndex < cards.length - slidePerView) {
-            currentIndex++;
-            track.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
-            paginationUpdate(currentIndex);
-            hiddenArrow(currentIndex);
-        }
+        scrollToIndex(currentIndex() + 1);
     });
 
     btnSliderLeft.addEventListener('click', () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-            track.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
-            paginationUpdate(currentIndex);
-            hiddenArrow(currentIndex);
-        }
+        scrollToIndex(currentIndex() - 1);
     });
+
+    // Update panah langsung tiap scroll (drag/trackpad/tombol), dan
+    // pagination sedikit di-debounce supaya tidak dihitung ratusan kali
+    // selagi animasi scroll masih berjalan.
+    let scrollDebounce;
+    function onScroll() {
+        updateArrows();
+        clearTimeout(scrollDebounce);
+        scrollDebounce = setTimeout(paginationUpdate, 80);
+    }
+    viewport.addEventListener('scroll', onScroll, { passive: true });
+    viewport.__swiperScrollHandler = onScroll;
 
     // pagination dots
     if (pagination) {
-        const slidePerView = getSlidePerView();
-        const dotCount = cards.length > slidePerView ? (cards.length - slidePerView + 1) : 1;
-        for (let i = 0; i < dotCount; i++) {
+        const count = dotCount();
+        for (let i = 0; i < count; i++) {
             pagination.innerHTML += `
                     <svg class="mx-2 mb-10" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27"
                         fill="none">
                         <circle cx="13.5" cy="13.5" r="13.5" fill="#3E9EC6"/>
                     </svg>`;
         }
-        paginationUpdate(currentIndex);
     }
+    updateArrows();
+    paginationUpdate();
 }
 
 // Cari & init ulang SEMUA swiper yang ada di halaman ini.
