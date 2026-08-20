@@ -5,13 +5,36 @@
    scale(.75)" lalu digeser pakai transform: translateX(...) yang
    dihitung dari offsetWidth (unscaled). Kombinasi itu bikin posisi
    kartu meleset (ketutupan / terpotong) begitu jumlah kartu hasil
-   fetch API beda dari kartu placeholder awal, seperti yang kelihatan
-   di screenshot (kartu pertama kepotong/blank).
+   fetch API beda dari kartu placeholder awal.
 
    Swiper baru pakai native horizontal scroll + scroll-snap. Panah
    kiri/kanan tinggal manggil viewport.scrollTo(...), jadi tidak ada
    lagi hitung-hitungan transform manual yang gampang meleset.
    ============================================================ */
+
+/* ============================================================
+   🔧 PENGATURAN UKURAN SWIPER — EDIT DI SINI SAJA
+   ------------------------------------------------------------
+   Kalau ukuran kartu masih kurang pas (kegedean/kekecilan) di
+   salah satu lebar layar, TINGGAL UBAH ANGKA DI BAWAH INI. Tidak
+   perlu utak-atik HTML atau file CSS/JS lain.
+
+   Satuannya "skala" (1 = ukuran asli kartu 300x440px, 0.5 = setengah
+   ukuran asli, dst). Ada 3 kelompok breakpoint (mengikuti breakpoint
+   Tailwind punya proyek ini: sm=576px, lg=992px), dan swiper "Artikel"
+   dipisah dari "Buku" / "Karya Ilmiah" karena di desain awal keduanya
+   memang beda skala di layar besar.
+   ============================================================ */
+:root {
+    --swiper-scale-sm: 0.375;
+    /* layar kecil / HP, < 576px */
+    --swiper-scale-mid: 0.75;
+    /* layar sedang, 576px – 991px */
+    --swiper-scale-lg-artikel: 0.6;
+    /* layar besar (>=992px) khusus swiper "Artikel" */
+    --swiper-scale-lg-buku: 0.6375;
+    /* layar besar (>=992px) khusus swiper "Buku" & "Karya Ilmiah" */
+}
 
 .swiper-viewport {
     overflow-x: auto;
@@ -41,46 +64,38 @@
    Kode lama menaruh "scale-75" pada .swiper-track (di DALAM area
    yang di-scroll) lalu digabung lagi dengan scale responsif punya
    .swiper-viewport sendiri (lg:scale-80 / lg:scale-85 / max-sm:scale-50)
-   dari nenek moyangnya -> dua transform ketumpuk (nested) supaya
-   ukurannya pas.
+   dari nenek moyangnya -> dua transform ketumpuk (nested).
 
    Transform di DALAM elemen yang di-scroll (.swiper-track) itu yang
    bikin acuan "posisi scroll asli (layout px)" vs "posisi yang
    kelihatan di layar (setelah discale)" jadi tidak singkron - ini
    akar masalah yang sama seperti bug "-left-64" sebelumnya. Makanya
-   scale-75 di .swiper-track sudah dibuang total.
-
-   Supaya ukuran kartu tetap sama seperti desain awal TANPA menaruh
-   transform di dalam area scroll, kedua angka scale itu (yang dulu
-   nempel di 2 elemen berbeda: .swiper-track & .swiper-viewport)
-   digabung jadi SATU angka lalu ditaruh di .swiper-viewport saja
-   (elemen yang di-scroll, discale dari LUAR - aman, tidak bikin
-   konflik antara koordinat scroll vs koordinat layar).
-
-   0.75 (dulu punya track) x 0.80/0.85 (dulu punya viewport, lg) x 0.50 (max-sm)
+   scale-nya sudah dipindah SATU LEVEL SAJA ke .swiper-viewport
+   (elemen yang di-scroll, discale dari LUAR - aman untuk perhitungan
+   scroll), dan angkanya dijadikan variabel CSS di atas biar gampang
+   diubah.
    ------------------------------------------------------------ */
 
 .swiper-viewport {
-    transform: scale(0.75);
+    transform: scale(var(--swiper-scale-mid));
 }
 
-/* varian "Artikel": dulu lg:scale-80 -> 0.75 x 0.8 = 0.6 */
+/* varian "Artikel" */
 @media (min-width: 992px) {
     .swiper-viewport--80 {
-        transform: scale(0.6);
+        transform: scale(var(--swiper-scale-lg-artikel));
     }
 }
 
-/* varian "Buku" & "Karya Ilmiah": dulu lg:scale-85 -> 0.75 x 0.85 = 0.6375 */
+/* varian "Buku" & "Karya Ilmiah" */
 @media (min-width: 992px) {
     .swiper-viewport--85 {
-        transform: scale(0.6375);
+        transform: scale(var(--swiper-scale-lg-buku));
     }
 }
 
-/* dulu max-sm:scale-50 (berlaku sama di ketiga swiper) -> 0.75 x 0.5 = 0.375 */
 @media (max-width: 575px) {
     .swiper-viewport {
-        transform: scale(0.375);
+        transform: scale(var(--swiper-scale-sm));
     }
 }

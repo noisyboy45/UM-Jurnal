@@ -16,6 +16,24 @@
 // kartu asli.
 // ============================================================
 
+// ============================================================
+// 🔧 PENGATURAN SWIPER (JS) — EDIT DI SINI SAJA
+// ------------------------------------------------------------
+// Kalau tampilan/perilaku swiper masih berantakan, cek 2 tempat
+// ini dulu SEBELUM ubah kode lain:
+//   1) SWIPER_CONFIG di bawah ini -> jumlah kartu per "halaman"
+//      swipe & breakpoint mobile/desktop-nya.
+//   2) variabel --swiper-scale-* di styles/swiper-fix.css -> ukuran
+//      (scale) kartu per breakpoint.
+// Semua bagian lain (native scroll, pagination, hover, dsb) baca
+// dari sini, jadi cukup ubah angkanya saja, tidak perlu ubah logic.
+// ============================================================
+const SWIPER_CONFIG = {
+    breakpoint: 992,   // di bawah lebar ini (px) dianggap "mobile"
+    slidesMobile: 2,   // jumlah kartu per halaman swipe di mobile
+    slidesDesktop: 4,  // jumlah kartu per halaman swipe di desktop
+};
+
 function initDocumentCardHover(scope) {
     const root = scope || document;
     const documentCard = root.querySelectorAll(".document-card");
@@ -140,7 +158,7 @@ function initSwiper(swiperEl) {
     // ditumpuk setiap initSwiper dipanggil ulang) supaya tidak ada listener
     // "hantu" yang menumpuk saat swiper di-refresh berkali-kali.
     function getSlidePerView() {
-        return window.innerWidth <= 992 ? 2 : 4;
+        return window.innerWidth <= SWIPER_CONFIG.breakpoint ? SWIPER_CONFIG.slidesMobile : SWIPER_CONFIG.slidesDesktop;
     }
 
     // Jarak (px, dalam koordinat layout asli viewport, tidak terpengaruh
