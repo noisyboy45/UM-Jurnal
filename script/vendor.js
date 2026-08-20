@@ -116,15 +116,17 @@ function initSwiper(swiperEl) {
     const gap = 40;
     const cardWidth = cards[0].offsetWidth + gap;
     let currentIndex = 0;
-    let slidePerView;
 
-    function updateSliderPerView() {
-        slidePerView = window.innerWidth <= 992 ? 2 : 4;
+    // Dihitung langsung tiap dibutuhkan (bukan lewat listener 'resize' yang
+    // ditumpuk setiap initSwiper dipanggil ulang) supaya tidak ada listener
+    // "hantu" yang menumpuk saat swiper di-refresh berkali-kali (mis. setelah
+    // data API masuk menggantikan kartu placeholder).
+    function getSlidePerView() {
+        return window.innerWidth <= 992 ? 2 : 4;
     }
-    updateSliderPerView();
-    window.addEventListener('resize', updateSliderPerView);
 
     function hiddenArrow(idx) {
+        const slidePerView = getSlidePerView();
         btnSliderLeft.classList.toggle("hidden", idx === 0);
         btnSliderRight.classList.toggle("hidden", idx === cards.length - slidePerView || cards.length < slidePerView);
     }
@@ -139,7 +141,7 @@ function initSwiper(swiperEl) {
     hiddenArrow(currentIndex);
 
     btnSliderRight.addEventListener('click', () => {
-        updateSliderPerView();
+        const slidePerView = getSlidePerView();
         if (currentIndex < cards.length - slidePerView) {
             currentIndex++;
             track.style.transform = `translateX(-${cardWidth * currentIndex}px)`;
@@ -159,6 +161,7 @@ function initSwiper(swiperEl) {
 
     // pagination dots
     if (pagination) {
+        const slidePerView = getSlidePerView();
         const dotCount = cards.length > slidePerView ? (cards.length - slidePerView + 1) : 1;
         for (let i = 0; i < dotCount; i++) {
             pagination.innerHTML += `
