@@ -12,7 +12,7 @@
 <body>
     <header id="navigation" class="flex flex-col relative w-full items-center pt-5">
         <div
-            class="bg-linear-to-b  from-[#4BA3C9] to-[#1375A0] to-[82.69%] absolute w-full h-160 md:h-155 sm:h-115 left-1/2 top-0 -translate-x-1/2 -z-10">
+            class="bg-linear-to-b  from-[#4BA3C9] to-[#1375A0] to-[82.69%] absolute w-full h-160 md:h-155 sm:h-115 max-sm:h-120 left-1/2 top-0 -translate-x-1/2 -z-10">
         </div>
         <svg class="absolute top-1/2 left-1/2 max-md:w-[110%] w-[95%] max-w-[1250px] h-40 -translate-1/2 drop-shadow-[0_4px_10.9px_rgba(0,0,0,0.25)]"
             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1249 127" preserveAspectRatio="none" fill="none">
@@ -54,69 +54,199 @@
         </div>
     </header>
     <main>
-        <div class="relative overflow-hidden right-0 flex flex-col mt-20 pr-30 xl:pl-170 md:pl-140 w-full h-118 ">
-            <img class="absolute xl:left-15 md:-left-10 -bottom-40 -scale-x-100 h-160"
+        <div
+            class="relative overflow-hidden right-0 flex flex-col mt-20 max-sm:mt-0 pr-30 max-sm:pr-2 xl:pl-170 md:pl-120 max-sm:pl-2 w-full h-118 ">
+            <img class="absolute max-sm:hidden xl:left-20 md:-left-10 -bottom-20 h-140"
                 src="../assets/images/buku-hero.png" alt="">
             <h1 class="text-white text-7xl font-bold mt-20">Buku
             </h1>
             <p class="text-white text-lg text-justify mt-10 ">Akses koleksi buku digital pilihan dari berbagai kategori
-                untuk mendukung pembelajaran, riset, maupun pengembangan kemampuan secara fleksibel kapan saja.</p>
+                untuk mendukung pembelajaran, riset, maupun pengembangan kemampuan secara fleksibel kapan saja.
+            </p>
         </div>
-        <div class="flex justify-center items-center">
-            <div class="flex flex-col px-20 w-[1300px]">
+        <div class="relative mt-10 max-sm:-mt-5 w-full max-w-[1200px] lg:scale-85 max-sm:scale-55 lg:-left-20">
+            <div class="relative left-15 max-sm:-left-23">
+                <img class="absolute top-1/2 left-[-0.7%] -translate-1/2 h-25" src="../assets/icons/file_icon_3.png"
+                    alt="">
+                <span
+                    class="bg-[#4BA3C9] text-white text-lg font-bold  flex justify-center items-center rounded-t-2xl w-30 h-9 shadow-[0_2px_4.5px_0_rgba(0,0,0,0.25)]">Buku</span>
+                <div class="bg-[#4BA3C9] left-35 bottom-0 absolute w-260 h-1"></div>
+            </div>
+        </div>
 
-                <div class="swiper-document md:mt-15  xl:mt-20 w-full">
-                    <div class="relative lg:left-35">
-                        <img class="absolute top-1/2 left-[-0.8%] -translate-1/2 h-25"
-                            src="../assets/icons/file_icon_3.png" alt="">
-                        <span
-                            class="bg-[#4BA3C9] text-white text-lg font-bold  flex justify-center items-center rounded-t-2xl w-30 h-9 shadow-[0_2px_4.5px_0_rgba(0,0,0,0.25)]">Buku</span>
-                        <div class="bg-[#4BA3C9] left-50 bottom-0 absolute w-250 h-1"></div>
-                    </div>
-                    <div class="relative flex justify-center items-center w-280">
-                        <button
-                            class="btn-slider-left cursor-pointer absolute lg:left-27 xl:left-0 lg:scale-80 top-1/2 -translate-y-1/2 -translate-x-1/2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"
-                                fill="none">
-                                <circle cx="24" cy="24" r="22.5" fill="white" stroke="#00923F" stroke-width="3" />
-                            </svg>
-                            <svg class="absolute left-1/2 top-1/2 -translate-1/2" xmlns="http://www.w3.org/2000/svg"
-                                width="12" height="21" viewBox="0 0 12 21" fill="none">
-                                <path
-                                    d="M11.5049 0.457527C11.7978 0.750543 11.9624 1.14792 11.9624 1.56226C11.9624 1.97661 11.7978 2.37398 11.5049 2.667L3.77052 10.4014L11.5049 18.1357C11.7806 18.4319 11.9306 18.8234 11.9235 19.2279C11.9164 19.6324 11.7526 20.0184 11.4667 20.3046C11.1808 20.5909 10.795 20.7551 10.3905 20.7626C9.98596 20.7702 9.59429 20.6206 9.29786 20.3452L0.457527 11.5073C0.164574 11.2143 0 10.8169 0 10.4026C0 9.98825 0.164574 9.59088 0.457527 9.29786L9.29542 0.457527C9.58844 0.164574 9.98581 0 10.4002 0C10.8145 0 11.2119 0.164574 11.5049 0.457527Z"
-                                    fill="#00923F" />
-                            </svg>
-                        </button>
-                        <button
-                            class="btn-slider-right cursor-pointer absolute lg:right-27 xl:right-0 lg:scale-80 top-1/2 -translate-y-1/2 translate-x-1/2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"
-                                fill="none">
-                                <circle cx="24" cy="24" r="22.5" fill="white" stroke="#00923F" stroke-width="3" />
-                            </svg>
-                            <svg class="absolute left-1/2 top-1/2 -translate-1/2" xmlns="http://www.w3.org/2000/svg"
-                                width="25" height="25" viewBox="0 0 25 25" fill="none">
-                                <path
-                                    d="M8.27148 22.4438C7.97852 22.1508 7.81395 21.7534 7.81395 21.3391C7.81395 20.9248 7.97852 20.5274 8.27148 20.2344L16.0059 12.5L8.27148 4.76562C7.9958 4.46949 7.84574 4.07798 7.85286 3.67346C7.85998 3.26895 8.02373 2.88296 8.30966 2.59672C8.59558 2.31048 8.98138 2.14631 9.38589 2.13874C9.7904 2.13117 10.1821 2.2808 10.4785 2.55614L19.3188 11.394C19.6118 11.6871 19.7764 12.0844 19.7764 12.4988C19.7764 12.9131 19.6118 13.3105 19.3188 13.6035L10.4809 22.4438C10.1879 22.7368 9.79056 22.9014 9.37621 22.9014C8.96187 22.9014 8.56449 22.7368 8.27148 22.4438Z"
-                                    fill="#00923F" />
-                            </svg>
-                        </button>
+        <div class="swiper-document flex flex-col items-center w-full">
+            <div class="relative flex justify-center items-center w-full z-20">
+                <button
+                    class="btn-slider-left cursor-pointer absolute left-10 max-sm:left-5 lg:scale-80 max-sm:scale-60 top-1/2 -translate-y-1/2 -translate-x-1/2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="22.5" fill="white" stroke="#00923F" stroke-width="3" />
+                    </svg>
+                    <svg class="absolute left-1/2 top-1/2 -translate-1/2" xmlns="http://www.w3.org/2000/svg" width="12"
+                        height="21" viewBox="0 0 12 21" fill="none">
+                        <path
+                            d="M11.5049 0.457527C11.7978 0.750543 11.9624 1.14792 11.9624 1.56226C11.9624 1.97661 11.7978 2.37398 11.5049 2.667L3.77052 10.4014L11.5049 18.1357C11.7806 18.4319 11.9306 18.8234 11.9235 19.2279C11.9164 19.6324 11.7526 20.0184 11.4667 20.3046C11.1808 20.5909 10.795 20.7551 10.3905 20.7626C9.98596 20.7702 9.59429 20.6206 9.29786 20.3452L0.457527 11.5073C0.164574 11.2143 0 10.8169 0 10.4026C0 9.98825 0.164574 9.59088 0.457527 9.29786L9.29542 0.457527C9.58844 0.164574 9.98581 0 10.4002 0C10.8145 0 11.2119 0.164574 11.5049 0.457527Z"
+                            fill="#00923F" />
+                    </svg>
+                </button>
+                <button
+                    class="btn-slider-right cursor-pointer absolute right-10 max-sm:right-5 lg:scale-80 max-sm:scale-60 top-1/2 -translate-y-1/2 translate-x-1/2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="22.5" fill="white" stroke="#00923F" stroke-width="3" />
+                    </svg>
+                    <svg class="absolute left-1/2 top-1/2 -translate-1/2" xmlns="http://www.w3.org/2000/svg" width="25"
+                        height="25" viewBox="0 0 25 25" fill="none">
+                        <path
+                            d="M8.27148 22.4438C7.97852 22.1508 7.81395 21.7534 7.81395 21.3391C7.81395 20.9248 7.97852 20.5274 8.27148 20.2344L16.0059 12.5L8.27148 4.76562C7.9958 4.46949 7.84574 4.07798 7.85286 3.67346C7.85998 3.26895 8.02373 2.88296 8.30966 2.59672C8.59558 2.31048 8.98138 2.14631 9.38589 2.13874C9.7904 2.13117 10.1821 2.2808 10.4785 2.55614L19.3188 11.394C19.6118 11.6871 19.7764 12.0844 19.7764 12.4988C19.7764 12.9131 19.6118 13.3105 19.3188 13.6035L10.4809 22.4438C10.1879 22.7368 9.79056 22.9014 9.37621 22.9014C8.96187 22.9014 8.56449 22.7368 8.27148 22.4438Z"
+                            fill="#00923F" />
+                    </svg>
+                </button>
 
-                        <div
-                            class="overflow-hidden flex items-center relative xl:mt-10 xl:mb-5 h-136 w-262 self-center lg:scale-80">
-                            <div class="swiper-track flex gap-10 top-12 px-9 w-fit">
+                <div class="flex items-center max-sm:h-60">
+                    <div
+                        class="overflow-hidden flex justify-start relative h-110 max-w-[1050px] w-full max-lg:w-135 self-center lg:scale-85 max-sm:scale-50">
+                        <div class="swiper-track relative flex gap-10 -left-64 px-9 w-fit scale-75">
 
+                            <div class="document-card bg-linear-to-b from-[#B57CFF] to-[#8A38F5]">
+                                <img src="../assets/icons/UM_icon.png" alt="">
+                                <span>Judul Buku</span>
+                                <img class="absolute -scale-100 opacity-20 rotate-[190deg] top-25 left-10 h-[400px]"
+                                    src="../assets/icons/book_card_icon_3.png" alt="">
+                                <div
+                                    class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                                    <div class="flex flex-col w-full">
+                                        <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                        <p class="text-justify">Lorem ipsum, dolor sit amet consectetur
+                                            adipisicing
+                                            elit. Aperiam ratione
+                                            perferendis quasi accusantium nam molestiae, dolorem totam quas
+                                            error
+                                            pariatur?
+                                        </p>
+                                    </div>
+                                    <a class="flex justify-center items-center text-white font-semibold bg-[#9C5CEE] rounded-full h-7 w-full"
+                                        href="pages/item-buku.html">Cek
+                                        Selengkapnya &#10132;</a>
+                                </div>
+                            </div>
 
-
-
+                            <div class="document-card bg-linear-to-b from-[#B57CFF] to-[#8A38F5]">
+                                <img src="../assets/icons/UM_icon.png" alt="">
+                                <span>Judul Buku</span>
+                                <img class="absolute -scale-100 opacity-20 rotate-[190deg] top-25 left-10 h-[400px]"
+                                    src="../assets/icons/book_card_icon_3.png" alt="">
+                                <div
+                                    class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                                    <div class="flex flex-col w-full">
+                                        <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                        <p class="text-justify">Lorem ipsum, dolor sit amet consectetur
+                                            adipisicing
+                                            elit. Aperiam ratione
+                                            perferendis quasi accusantium nam molestiae, dolorem totam quas
+                                            error
+                                            pariatur?
+                                        </p>
+                                    </div>
+                                    <a class="flex justify-center items-center text-white font-semibold bg-[#9C5CEE] rounded-full h-7 w-full"
+                                        href="pages/item-buku.html">Cek
+                                        Selengkapnya &#10132;</a>
+                                </div>
+                            </div>
+                            <div class="document-card bg-linear-to-b from-[#B57CFF] to-[#8A38F5]">
+                                <img src="../assets/icons/UM_icon.png" alt="">
+                                <span>Judul Buku</span>
+                                <img class="absolute -scale-100 opacity-20 rotate-[190deg] top-25 left-10 h-[400px]"
+                                    src="../assets/icons/book_card_icon_3.png" alt="">
+                                <div
+                                    class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                                    <div class="flex flex-col w-full">
+                                        <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                        <p class="text-justify">Lorem ipsum, dolor sit amet consectetur
+                                            adipisicing
+                                            elit. Aperiam ratione
+                                            perferendis quasi accusantium nam molestiae, dolorem totam quas
+                                            error
+                                            pariatur?
+                                        </p>
+                                    </div>
+                                    <a class="flex justify-center items-center text-white font-semibold bg-[#9C5CEE] rounded-full h-7 w-full"
+                                        href="pages/item-buku.html">Cek
+                                        Selengkapnya &#10132;</a>
+                                </div>
+                            </div>
+                            <div class="document-card bg-linear-to-b from-[#B57CFF] to-[#8A38F5]">
+                                <img src="../assets/icons/UM_icon.png" alt="">
+                                <span>Judul Buku</span>
+                                <img class="absolute -scale-100 opacity-20 rotate-[190deg] top-25 left-10 h-[400px]"
+                                    src="../assets/icons/book_card_icon_3.png" alt="">
+                                <div
+                                    class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                                    <div class="flex flex-col w-full">
+                                        <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                        <p class="text-justify">Lorem ipsum, dolor sit amet consectetur
+                                            adipisicing
+                                            elit. Aperiam ratione
+                                            perferendis quasi accusantium nam molestiae, dolorem totam quas
+                                            error
+                                            pariatur?
+                                        </p>
+                                    </div>
+                                    <a class="flex justify-center items-center text-white font-semibold bg-[#9C5CEE] rounded-full h-7 w-full"
+                                        href="pages/item-buku.html">Cek
+                                        Selengkapnya &#10132;</a>
+                                </div>
+                            </div>
+                            <div class="document-card bg-linear-to-b from-[#B57CFF] to-[#8A38F5]">
+                                <img src="../assets/icons/UM_icon.png" alt="">
+                                <span>Judul Buku</span>
+                                <img class="absolute -scale-100 opacity-20 rotate-[190deg] top-25 left-10 h-[400px]"
+                                    src="../assets/icons/book_card_icon_3.png" alt="">
+                                <div
+                                    class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                                    <div class="flex flex-col w-full">
+                                        <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                        <p class="text-justify">Lorem ipsum, dolor sit amet consectetur
+                                            adipisicing
+                                            elit. Aperiam ratione
+                                            perferendis quasi accusantium nam molestiae, dolorem totam quas
+                                            error
+                                            pariatur?
+                                        </p>
+                                    </div>
+                                    <a class="flex justify-center items-center text-white font-semibold bg-[#9C5CEE] rounded-full h-7 w-full"
+                                        href="pages/item-buku.html">Cek
+                                        Selengkapnya &#10132;</a>
+                                </div>
+                            </div>
+                            <div class="document-card bg-linear-to-b from-[#B57CFF] to-[#8A38F5]">
+                                <img src="../assets/icons/UM_icon.png" alt="">
+                                <span>Judul Buku</span>
+                                <img class="absolute -scale-100 opacity-20 rotate-[190deg] top-25 left-10 h-[400px]"
+                                    src="../assets/icons/book_card_icon_3.png" alt="">
+                                <div
+                                    class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
+                                    <div class="flex flex-col w-full">
+                                        <span class="font-semibold mb-2 text-black">Deskripsi:</span>
+                                        <p class="text-justify">Lorem ipsum, dolor sit amet consectetur
+                                            adipisicing
+                                            elit. Aperiam ratione
+                                            perferendis quasi accusantium nam molestiae, dolorem totam quas
+                                            error
+                                            pariatur?
+                                        </p>
+                                    </div>
+                                    <a class="flex justify-center items-center text-white font-semibold bg-[#9C5CEE] rounded-full h-7 w-full"
+                                        href="pages/item-buku.html">Cek
+                                        Selengkapnya &#10132;</a>
+                                </div>
                             </div>
 
                         </div>
 
                     </div>
-                    <div class="pagination flex flex-row justify-center  w-full h-fit">
-
-                    </div>
                 </div>
+
+            </div>
+            <div class="pagination flex flex-row justify-center w-full h-fit max-sm:scale-60">
 
             </div>
         </div>
@@ -124,7 +254,7 @@
     </main>
 
     <footer
-        class="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-x-25 text-white bg-linear-to-b from-[#4BA3C9] to-[#1375A0] w-full h-115 p-20 rounded-t-2xl">
+        class="flex flex-col gap-x-25 text-white bg-linear-to-b from-[#4BA3C9] to-[#1375A0] w-full h-115 p-20 rounded-t-2xl">
         <div class="flex flex-col justify-start">
             <div class="flex flex-row justify-center items-center self-start">
                 <img class="w-15" src="../assets/icons/UM_icon.png" alt="">
@@ -186,37 +316,23 @@
             </div>
 
         </div>
-        <div class="grid grid-rows-[2fr_1fr_1fr_1fr_1fr_1fr] h-full">
-            <span>Artikel</span>
-            <a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor
-                sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a>
-        </div>
-        <div class="grid grid-rows-[2fr_1fr_1fr_1fr_1fr_1fr] h-full">
-            <span>Artikel</span>
-            <a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor
-                sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a>
-        </div>
-        <div class="grid grid-rows-[2fr_1fr_1fr_1fr_1fr_1fr] h-full">
-            <span>Artikel</span>
-            <a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor
-                sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a>
-        </div>
+
     </footer>
     <script src="../script/script.js"></script>
-<script>
-(async function() {
-    try {
-        const res = await fetch('/api/books');
-        const json = await res.json();
-        if (!json.success || !json.data.books.length) return;
-        const track = document.querySelector('.swiper-track');
-        if (!track) return;
-        track.innerHTML = '';
-        json.data.books.forEach(b => {
-            const card = document.createElement('div');
-            card.className = 'document-card bg-gradient-to-b from-[#5DB3F4] to-[#2578F7]';
-            const coverSrc = b.cover ? '/uploads/book/' + b.cover : '../assets/icons/UM_icon.png';
-            card.innerHTML = `
+    <script>
+        (async function () {
+            try {
+                const res = await fetch('/api/books');
+                const json = await res.json();
+                if (!json.success || !json.data.books.length) return;
+                const track = document.querySelector('.swiper-track');
+                if (!track) return;
+                track.innerHTML = '';
+                json.data.books.forEach(b => {
+                    const card = document.createElement('div');
+                    card.className = 'document-card bg-gradient-to-b from-[#5DB3F4] to-[#2578F7]';
+                    const coverSrc = b.cover ? '/uploads/book/' + b.cover : '../assets/icons/UM_icon.png';
+                    card.innerHTML = `
                 <img src="${coverSrc}" alt="">
                 <span>${escapeHtml(b.title)}</span>
                 <div class="deskripsi-card absolute flex flex-col justify-between bg-white top-130 left-1/2 -translate-x-1/2 rounded-2xl p-4 h-55 w-69 shadow-[2px_6px_20px_2px_rgba(0,0,0,0.75)] z-10">
@@ -227,12 +343,13 @@
                     <a class="flex justify-center items-center text-white font-semibold bg-[#3482CB] rounded-full h-7 w-full" href="item-buku.html?id=${b.id}">Cek Selengkapnya &#10132;</a>
                 </div>
             `;
-            track.appendChild(card);
-        });
-    } catch(e) { console.error(e); }
-    function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
-})();
-</script>
+                    track.appendChild(card);
+                });
+            } catch (e) { console.error(e); }
+            function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+        })();
+    </script>
+    <script src="../script/vendor.js"></script>
 </body>
 
 </html>

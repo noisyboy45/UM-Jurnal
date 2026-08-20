@@ -70,7 +70,7 @@
     </main>
 
     <footer
-        class="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-x-25 text-white bg-linear-to-b from-[#4BA3C9] to-[#1375A0] w-full h-115 p-20 rounded-t-2xl">
+        class="flex flex-col gap-x-25 text-white bg-linear-to-b from-[#4BA3C9] to-[#1375A0] w-full h-115 p-20 rounded-t-2xl">
         <div class="flex flex-col justify-start">
             <div class="flex flex-row justify-center items-center self-start">
                 <img class="w-15" src="../assets/icons/UM_icon.png" alt="">
@@ -132,55 +132,41 @@
             </div>
 
         </div>
-        <div class="grid grid-rows-[2fr_1fr_1fr_1fr_1fr_1fr] h-full">
-            <span>Artikel</span>
-            <a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor
-                sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a>
-        </div>
-        <div class="grid grid-rows-[2fr_1fr_1fr_1fr_1fr_1fr] h-full">
-            <span>Artikel</span>
-            <a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor
-                sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a>
-        </div>
-        <div class="grid grid-rows-[2fr_1fr_1fr_1fr_1fr_1fr] h-full">
-            <span>Artikel</span>
-            <a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor
-                sit.</a><a href="#">Lorem ipsum dolor sit.</a><a href="#">Lorem ipsum dolor sit.</a>
-        </div>
+
     </footer>
     <script src="../script/script.js"></script>
     <script>
-    (async function() {
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-        if (!id) return;
-        try {
-            const res = await fetch('/api/articles/' + id);
-            const json = await res.json();
-            if (!json.success) { document.body.innerHTML = '<div style="text-align:center;padding:100px;font-size:24px;">Artikel tidak ditemukan.</div>'; return; }
-            const d = json.data.article;
-            document.querySelector('span.mb-2.mt-2') && (document.querySelector('span.mb-2.mt-2').textContent = d.user ? d.user.name : '');
-            document.querySelector('span.text-3xl.font-bold') && (document.querySelector('span.text-3xl.font-bold').textContent = d.title || '');
-            document.querySelector('span.mb-5') && (document.querySelector('span.mb-5').textContent = 'Artikel');
-            document.querySelectorAll('span.font-semibold')[1] && (document.querySelectorAll('span.font-semibold')[1].textContent = d.user ? d.user.name : '');
-            if (d.thumbnail) {
-                const img = document.querySelector('.rounded-sm img');
-                if (img) img.src = '/uploads/article/' + d.thumbnail;
-            }
-            const abstractP = document.querySelector('.bg-gradient-to-b p');
-            if (abstractP) abstractP.textContent = d.abstract || d.content || 'Tidak ada abstrak.';
-            if (d.pdfFile) {
-                const links = document.querySelectorAll('a');
-                links.forEach(a => {
-                    if (a.textContent.includes('PDF') || a.textContent.includes('Unduh')) {
-                        a.href = '/uploads/article/' + d.pdfFile;
-                        a.target = '_blank';
-                    }
-                });
-            }
-            document.title = d.title + ' - UM Jurnal';
-        } catch(e) { console.error(e); }
-    })();
+        (async function () {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) return;
+            try {
+                const res = await fetch('/api/articles/' + id);
+                const json = await res.json();
+                if (!json.success) { document.body.innerHTML = '<div style="text-align:center;padding:100px;font-size:24px;">Artikel tidak ditemukan.</div>'; return; }
+                const d = json.data.article;
+                document.querySelector('span.mb-2.mt-2') && (document.querySelector('span.mb-2.mt-2').textContent = d.user ? d.user.name : '');
+                document.querySelector('span.text-3xl.font-bold') && (document.querySelector('span.text-3xl.font-bold').textContent = d.title || '');
+                document.querySelector('span.mb-5') && (document.querySelector('span.mb-5').textContent = 'Artikel');
+                document.querySelectorAll('span.font-semibold')[1] && (document.querySelectorAll('span.font-semibold')[1].textContent = d.user ? d.user.name : '');
+                if (d.thumbnail) {
+                    const img = document.querySelector('.rounded-sm img');
+                    if (img) img.src = '/uploads/article/' + d.thumbnail;
+                }
+                const abstractP = document.querySelector('.bg-gradient-to-b p');
+                if (abstractP) abstractP.textContent = d.abstract || d.content || 'Tidak ada abstrak.';
+                if (d.pdfFile) {
+                    const links = document.querySelectorAll('a');
+                    links.forEach(a => {
+                        if (a.textContent.includes('PDF') || a.textContent.includes('Unduh')) {
+                            a.href = '/uploads/article/' + d.pdfFile;
+                            a.target = '_blank';
+                        }
+                    });
+                }
+                document.title = d.title + ' - UM Jurnal';
+            } catch (e) { console.error(e); }
+        })();
     </script>
 </body>
 
