@@ -143,9 +143,9 @@
                 const json = await res.json();
                 if (!json.success) { document.body.innerHTML = '<div style="text-align:center;padding:100px;font-size:24px;">Buku tidak ditemukan.</div>'; return; }
                 const d = json.data.book;
-                document.querySelectorAll('span')[3] && (document.querySelectorAll('span')[3].textContent = d.author || '');
-                document.querySelectorAll('span')[4] && (document.querySelectorAll('span')[4].textContent = d.title || '');
-                document.querySelectorAll('span')[5] && (document.querySelectorAll('span')[5].textContent = (d.year ? 'Tahun: ' + d.year : ''));
+                document.querySelector('span.mb-2.mt-2') && (document.querySelector('span.mb-2.mt-2').textContent = d.author || '');
+                document.querySelector('span.text-3xl.font-bold') && (document.querySelector('span.text-3xl.font-bold').textContent = d.title || '');
+                document.querySelector('span.mb-5') && (document.querySelector('span.mb-5').textContent = (d.year ? 'Tahun: ' + d.year : ''));
                 if (d.cover) {
                     const img = document.querySelector('.rounded-sm img');
                     if (img) img.src = '/uploads/book/' + d.cover;
@@ -158,10 +158,12 @@
                         if (a.textContent.includes('Lihat PDF')) {
                             a.href = pdfUrl;
                             a.target = '_blank';
+                            a.rel = 'noopener noreferrer';
                             a.removeAttribute('download');
                         } else if (a.textContent.includes('Unduh')) {
                             a.href = pdfUrl;
-                            a.setAttribute('download', d.title || 'buku.pdf');
+                            const fileName = (d.title || 'buku') + (/\.pdf$/i.test(d.title || '') ? '' : '.pdf');
+                            a.setAttribute('download', fileName);
                         }
                     });
                 } else {
