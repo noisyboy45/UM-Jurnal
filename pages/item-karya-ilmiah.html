@@ -136,6 +136,22 @@
     </footer>
     <script src="../script/script.js"></script>
     <script>
+        function disablePdfButtons(message) {
+            let firstBtn = null;
+            document.querySelectorAll('a').forEach(a => {
+                if (a.textContent.includes('Lihat PDF') || a.textContent.includes('Unduh')) {
+                    a.classList.add('opacity-50', 'pointer-events-none');
+                    a.removeAttribute('href');
+                    if (!firstBtn) firstBtn = a;
+                }
+            });
+            if (message && firstBtn && firstBtn.parentElement && !firstBtn.parentElement.parentElement.querySelector('.pdf-unavailable-note')) {
+                const note = document.createElement('p');
+                note.className = 'pdf-unavailable-note text-sm text-red-500 mt-2';
+                note.textContent = message;
+                firstBtn.parentElement.insertAdjacentElement('afterend', note);
+            }
+        }
         (async function () {
             const params = new URLSearchParams(window.location.search);
             const id = params.get('id');
@@ -152,24 +168,30 @@
                 if (descEl) descEl.textContent = d.abstract || 'Tidak ada abstrak.';
                 if (d.pdfFile) {
                     const pdfUrl = '/uploads/scientific/' + d.pdfFile;
-                    document.querySelectorAll('a').forEach(a => {
-                        if (a.textContent.includes('Lihat PDF')) {
-                            a.href = pdfUrl;
-                            a.target = '_blank';
-                            a.rel = 'noopener noreferrer';
-                            a.removeAttribute('download');
-                        } else if (a.textContent.includes('Unduh')) {
-                            a.href = pdfUrl;
-                            const fileName = (d.title || 'karya-ilmiah') + (/\.pdf$/i.test(d.title || '') ? '' : '.pdf');
-                            a.setAttribute('download', fileName);
-                        }
-                    });
+                    let fileExists = false;
+                    try {
+                        const headRes = await fetch(pdfUrl, { method: 'HEAD' });
+                        fileExists = headRes.ok;
+                    } catch (e) { fileExists = false; }
+
+                    if (fileExists) {
+                        document.querySelectorAll('a').forEach(a => {
+                            if (a.textContent.includes('Lihat PDF')) {
+                                a.href = pdfUrl;
+                                a.target = '_blank';
+                                a.rel = 'noopener noreferrer';
+                                a.removeAttribute('download');
+                            } else if (a.textContent.includes('Unduh')) {
+                                a.href = pdfUrl;
+                                const fileName = (d.title || 'karya-ilmiah') + (/\.pdf$/i.test(d.title || '') ? '' : '.pdf');
+                                a.setAttribute('download', fileName);
+                            }
+                        });
+                    } else {
+                        disablePdfButtons('File PDF tidak ditemukan di server. Silakan upload ulang melalui dashboard.');
+                    }
                 } else {
-                    document.querySelectorAll('a').forEach(a => {
-                        if (a.textContent.includes('Lihat PDF') || a.textContent.includes('Unduh')) {
-                            a.classList.add('opacity-50', 'pointer-events-none');
-                        }
-                    });
+                    disablePdfButtons('Belum ada file PDF untuk karya ilmiah ini.');
                 }
                 document.title = d.title + ' - UM Jurnal';
             } catch (e) { console.error(e); }
