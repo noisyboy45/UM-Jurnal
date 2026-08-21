@@ -1153,6 +1153,12 @@
       --tw-scale-z: 60%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
+    .max-sm\:scale-75 {
+      --tw-scale-x: 75%;
+      --tw-scale-y: 75%;
+      --tw-scale-z: 75%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
     .max-sm\:grid-rows-1 {
       grid-template-rows: repeat(1, minmax(0, 1fr));
     }
