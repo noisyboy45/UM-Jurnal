@@ -231,7 +231,7 @@ function initSwiper(swiperEl) {
     // pagination dots
     if (pagination) {
         const count = dotCount();
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < count + 1; i++) {
             pagination.innerHTML += `
                     <svg class="mx-2 mb-10" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27"
                         fill="none">
