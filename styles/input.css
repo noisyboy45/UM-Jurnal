@@ -69,7 +69,7 @@
     }
 
     .document-card>span {
-        @apply text-3xl text-white font-bold mt-5;
+        @apply text-xl text-white font-bold mt-5;
     }
 
     .document-card>svg {

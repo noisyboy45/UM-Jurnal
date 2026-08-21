@@ -207,9 +207,6 @@
   .top-0 {
     top: 0px;
   }
-  .top-1 {
-    top: var(--spacing);
-  }
   .top-1\/2 {
     top: calc(1 / 2 * 100%);
   }
@@ -327,9 +324,6 @@
   .mb-28 {
     margin-bottom: calc(var(--spacing) * 28);
   }
-  .ml-1 {
-    margin-left: var(--spacing);
-  }
   .ml-1\.5 {
     margin-left: calc(var(--spacing) * 1.5);
   }
@@ -362,9 +356,6 @@
   }
   .hidden {
     display: none;
-  }
-  .table {
-    display: table;
   }
   .h-1 {
     height: var(--spacing);
@@ -414,9 +405,6 @@
   .h-70 {
     height: calc(var(--spacing) * 70);
   }
-  .h-100 {
-    height: calc(var(--spacing) * 100);
-  }
   .h-115 {
     height: calc(var(--spacing) * 115);
   }
@@ -434,9 +422,6 @@
   }
   .h-190 {
     height: calc(var(--spacing) * 190);
-  }
-  .h-195 {
-    height: calc(var(--spacing) * 195);
   }
   .h-\[115px\] {
     height: 115px;
@@ -549,37 +534,17 @@
   .flex-shrink {
     flex-shrink: 1;
   }
-  .border-collapse {
-    border-collapse: collapse;
-  }
-  .-translate-1 {
-    --tw-translate-x: calc(var(--spacing) * -1);
-    --tw-translate-y: calc(var(--spacing) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
   .-translate-1\/2 {
     --tw-translate-x: calc(calc(1 / 2 * 100%) * -1);
     --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-  .-translate-x-1 {
-    --tw-translate-x: calc(var(--spacing) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .-translate-x-1\/2 {
     --tw-translate-x: calc(calc(1 / 2 * 100%) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
-  .translate-x-1 {
-    --tw-translate-x: var(--spacing);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
   .translate-x-1\/2 {
     --tw-translate-x: calc(1 / 2 * 100%);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-  .-translate-y-1 {
-    --tw-translate-y: calc(var(--spacing) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .-translate-y-1\/2 {
@@ -839,9 +804,6 @@
   .px-20 {
     padding-inline: calc(var(--spacing) * 20);
   }
-  .py-0 {
-    padding-block: 0px;
-  }
   .py-0\.5 {
     padding-block: calc(var(--spacing) * 0.5);
   }
@@ -1048,9 +1010,6 @@
     }
     .max-sm\:mt-10 {
       margin-top: calc(var(--spacing) * 10);
-    }
-    .max-sm\:block {
-      display: block;
     }
     .max-sm\:hidden {
       display: none;
@@ -1390,8 +1349,8 @@
   }
   .document-card>span {
     margin-top: calc(var(--spacing) * 5);
-    font-size: var(--text-3xl);
-    line-height: var(--tw-leading, var(--text-3xl--line-height));
+    font-size: var(--text-xl);
+    line-height: var(--tw-leading, var(--text-xl--line-height));
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
     color: var(--color-white);
