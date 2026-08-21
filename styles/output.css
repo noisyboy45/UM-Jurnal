@@ -1050,6 +1050,9 @@
     .max-lg\:w-135 {
       width: calc(var(--spacing) * 135);
     }
+    .max-lg\:w-150 {
+      width: calc(var(--spacing) * 150);
+    }
   }
   @media (width < 768px) {
     .max-md\:hidden {
